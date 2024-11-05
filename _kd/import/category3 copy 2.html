@@ -1,0 +1,546 @@
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+
+<div style="width: 90%; margin: 0 auto;">
+  <div style="display: flex;align-items: center;gap: 12px;justify-content: space-between;">
+    <span>
+      <a href="https://almondyoung.com/product/list.html?cate_no=499"
+        style="display: flex; align-items: center; color: #333; text-decoration: none; font-size: 14px;">
+        <img src="/web/main_cate_icons/pin_icon.png" alt="압정아이콘"
+          style="width: 16px; height: 16px; margin-right: 4px;" />
+        전체 상품 보기 &gt;
+      </a>
+    </span>
+    <div style="display: flex;">
+      <span id="editCustomMenu" class="view-all-text"
+        style="font-size: 14px; color: #999; cursor: pointer;margin: 0px;">
+        편집하기</span>
+      <span id="betweenEditAll" style="font-size: 14px; color: #999;margin: 0px;">&nbsp;|&nbsp;</span>
+      <span id="viewAllButton" class="view-all-text"
+        style="font-size: 14px; color: #999; cursor: pointer;margin: 0px;">전체
+        메뉴보기</span>
+    </div>
+  </div>
+
+  <div class="slided-category">
+    <div class="hamburger_category_slider">
+    </div>
+    <div class="slider-dots" style="text-align: center; margin-bottom: 10px">
+    </div>
+  </div>
+  <!-- end content -->
+
+  <style>
+    .hamburger_category_slider {
+      user-select: none;
+      cursor: grab;
+      touch-action: pan-y;
+      -webkit-user-drag: none;
+    }
+
+    .hamburger_category_slider:active {
+      cursor: grabbing;
+    }
+
+    .hamburger_category_slider>div {
+      display: none;
+    }
+
+    .hamburger_category_slider>div.active {
+      display: block;
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ddd;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #F7AF00;
+    }
+  </style>
+
+  <script>
+    // 전역 변수 선언
+    let isDragging = false;
+    let startPos = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    let animationID = null;
+    let currentSlide = 0;
+    let isViewAll = false;
+
+    // 전체 메뉴 데이터 정의
+    const FULL_MENU_LIST = [
+      { name: "카카오채널", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H01.png" },
+      { name: "다뷰", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H02.png" },
+      { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" },
+      { name: "캔바디자인", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H04.png" },
+      { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" },
+      { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" },
+      { name: "퍼마블렌드", redirect_url: "/perma/perma.html", image_src: "/web/main_cate_icons/H07.png" },
+      { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" },
+      { name: "렌탈", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=349", image_src: "/web/main_cate_icons/H09.png" },
+      { name: "클래스", redirect_url: "https://almondyoung.com/product/list.html?cate_no=86", image_src: "/web/main_cate_icons/H10.png" },
+      { name: "샵매매", redirect_url: "https://almondyoung.com/front/php/b/board_list.php?board_no=13", image_src: "/web/main_cate_icons/H11.png" },
+      { name: "아몬드뉴스", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H12.png" },
+      { name: "저작권 제보", redirect_url: "https://almondyoung.com/event/copyright.html", image_src: "/web/main_cate_icons/H13.png" },
+      { name: "최저가신고", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H14.png" },
+      { name: "이벤트", redirect_url: "https://pf.kakao.com/_xaxgxazs", image_src: "/web/main_cate_icons/H15.png" },
+      { name: "찾아주세요", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H16.png" },
+      { name: "아몬드티비", redirect_url: "https://almondyoung.com/shop1/front/php/b/board_list.php?board_no=8&is_pcver=T", image_src: "/web/main_cate_icons/H17.png" },
+      { name: "속눈썹펌", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=246", image_src: "/web/main_cate_icons/H18.png" },
+      { name: "속눈썹연장", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=247", image_src: "/web/main_cate_icons/H19.png" },
+      { name: "반영구", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=261", image_src: "/web/main_cate_icons/H20.png" },
+      { name: "왁싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=267", image_src: "/web/main_cate_icons/H21.png" },
+      { name: "타투", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=271", image_src: "/web/main_cate_icons/H22.png" },
+      { name: "네일아트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=28", image_src: "/web/main_cate_icons/H23.png" },
+      { name: "피부미용", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=278", image_src: "/web/main_cate_icons/H24.png" },
+      { name: "헤어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=347", image_src: "/web/main_cate_icons/H25.png" },
+      { name: "메이크업", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=43", image_src: "/web/main_cate_icons/H26.png" },
+      { name: "피어싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=348", image_src: "/web/main_cate_icons/H27.png" },
+      { name: "미용기기", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=290", image_src: "/web/main_cate_icons/H28.png" },
+      { name: "인테리어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=44", image_src: "/web/main_cate_icons/H29.png" }
+    ];
+
+    // Supabase 설정
+    sessionStorage.setItem('memberId', 'hyunbin')
+    const memberId = sessionStorage.getItem('memberId')
+    const supabaseUrl = "https://lqibttwulcrhlunvjkwh.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxaWJ0dHd1bGNyaGx1bnZqa3doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA2OTg5NjYsImV4cCI6MjA0NjI3NDk2Nn0.K9qaBcngXif4b6wPy7feHRZrBLmFaiB-DDl0g4vkzqc";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 드래그 이벤트 관련 함수
+    function addDragEvents() {
+      const slider = document.querySelector('.hamburger_category_slider');
+      if (!slider) return;
+
+      function animation() {
+        if (isDragging) {
+          animationID = requestAnimationFrame(animation);
+        }
+      }
+
+      function drag(event) {
+        if (!isDragging) return;
+        event.preventDefault();
+
+        let currentPosition = event.type === "touchmove" ? event.touches[0].clientX : event.clientX;
+        const diff = currentPosition - startPos;
+        currentTranslate = prevTranslate + diff;
+      }
+
+      function dragStart(event) {
+        event.preventDefault();
+        if (isViewAll) return;
+
+        startPos = event.type === "touchstart" ? event.touches[0].clientX : event.clientX;
+        isDragging = true;
+        animationID = requestAnimationFrame(animation);
+        slider.style.cursor = "grabbing";
+      }
+
+      function dragEnd() {
+        if (!isDragging) return;
+
+        isDragging = false;
+        cancelAnimationFrame(animationID);
+        slider.style.cursor = "grab";
+
+        const movedBy = currentTranslate - prevTranslate;
+        const slides = document.querySelectorAll(".hamburger_category_slider > div");
+
+        if (Math.abs(movedBy) > 100) {
+          if (movedBy < 0 && currentSlide < slides.length - 1) {
+            currentSlide++;
+          } else if (movedBy > 0 && currentSlide > 0) {
+            currentSlide--;
+          }
+        }
+
+        prevTranslate = currentTranslate;
+        updateSlider();
+      }
+
+      slider.addEventListener("mousedown", dragStart, { passive: false });
+      slider.addEventListener("mousemove", drag, { passive: false });
+      slider.addEventListener("mouseup", dragEnd);
+      slider.addEventListener("mouseleave", dragEnd);
+      slider.addEventListener("touchstart", dragStart, { passive: false });
+      slider.addEventListener("touchmove", drag, { passive: false });
+      slider.addEventListener("touchend", dragEnd);
+    }
+
+    function removeDragEvents() {
+      const slider = document.querySelector('.hamburger_category_slider');
+      if (!slider) return;
+
+      const dragStart = () => { };
+      const drag = () => { };
+      const dragEnd = () => { };
+
+      slider.removeEventListener("mousedown", dragStart);
+      slider.removeEventListener("mousemove", drag);
+      slider.removeEventListener("mouseup", dragEnd);
+      slider.removeEventListener("mouseleave", dragEnd);
+      slider.removeEventListener("touchstart", dragStart);
+      slider.removeEventListener("touchmove", drag);
+      slider.removeEventListener("touchend", dragEnd);
+    }
+
+    // renderFullMenu 함수 수정
+    function renderFullMenu() {
+      const fullMenuContainer = document.createElement('div');
+      fullMenuContainer.className = 'full-menu-container';
+      fullMenuContainer.style.display = 'none';
+
+      FULL_MENU_LIST.forEach(menuItem => {
+        const menuElement = document.createElement('a');
+        menuElement.href = menuItem.redirect_url;
+        menuElement.className = 'category fold';
+
+        if (menuItem.name === '다뷰') {
+          menuElement.href = '#';
+          menuElement.onclick = () => redirectToAppStore();
+        }
+
+        const img = document.createElement('img');
+        img.src = menuItem.image_src;
+        img.alt = menuItem.name;
+        img.loading = 'lazy';
+
+        const span = document.createElement('span');
+        span.textContent = menuItem.name;
+
+        menuElement.appendChild(img);
+        menuElement.appendChild(span);
+        fullMenuContainer.appendChild(menuElement);
+      });
+
+      return fullMenuContainer;
+    }
+
+    // 커스텀 메뉴 렌더링 함수
+    function renderCustomMenu(menuSequence) {
+      console.log('menuSequence : ', menuSequence);
+      const slider = document.querySelector('.hamburger_category_slider');
+      const dotsContainer = document.querySelector('.slider-dots');
+      slider.innerHTML = '';
+      dotsContainer.innerHTML = '';
+      slider.style.cursor = 'grab';
+
+      let pageContainer = document.createElement('div');
+      pageContainer.classList.add('image');
+      let lineContainer = document.createElement('div');
+      lineContainer.classList.add('line');
+      let itemCount = 0;
+      let pageCount = 0;
+      let isFirstPage = true;
+
+      menuSequence.forEach((item, index) => {
+        const menuData = item.menu;
+
+        const menuItem = document.createElement('a');
+        if (menuData.name == '다뷰') {
+          menuItem.href = '#';
+          menuItem.onclick = () => redirectToAppStore();
+        } else {
+          menuItem.href = menuData.redirect_url;
+        }
+        menuItem.className = 'category fold';
+        menuItem.id = 'bm_category';
+
+        const menuImage = document.createElement('img');
+        menuImage.src = menuData.image_src;
+        menuImage.style.width = '50px';
+        menuImage.style.height = '50px';
+        menuImage.alt = menuData.name;
+        menuImage.loading = 'lazy';
+
+        const menuText = document.createElement('span');
+        menuText.style.fontSize = '14px';
+        menuText.style.marginTop = '8px';
+        menuText.textContent = menuData.name;
+
+        menuItem.appendChild(menuImage);
+        menuItem.appendChild(menuText);
+        lineContainer.appendChild(menuItem);
+
+        itemCount++;
+
+        if (itemCount % 4 === 0 || index === menuSequence.length - 1) {
+          pageContainer.appendChild(lineContainer);
+          lineContainer = document.createElement('div');
+          lineContainer.classList.add('line');
+        }
+
+        if (itemCount % 8 === 0 || index === menuSequence.length - 1) {
+          const container = document.createElement('div');
+          if (isFirstPage) {
+            container.classList.add('active');
+            isFirstPage = false;
+          }
+          container.appendChild(pageContainer);
+          slider.appendChild(container);
+
+          const dot = document.createElement('span');
+          dot.classList.add('dot');
+          if (pageCount === 0) {
+            dot.classList.add('active');
+          }
+
+          dotsContainer.appendChild(dot);
+          pageCount++;
+
+          if (index < menuSequence.length - 1) {
+            pageContainer = document.createElement('div');
+            pageContainer.classList.add('image');
+          }
+        }
+      });
+
+      addDragEvents();
+    }
+
+    // 전체보기 토글 함수
+    function toggleFullMenu() {
+      const slidedCategory = document.querySelector('.slided-category');
+      const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+      const sliderDots = document.querySelector('.slider-dots');
+      let fullMenuContainer = document.querySelector('.full-menu-container');
+
+      if (!fullMenuContainer) {
+        fullMenuContainer = renderFullMenu();
+        slidedCategory.insertBefore(fullMenuContainer, sliderDots);
+      }
+
+      if (isViewAll) {
+        hamburgerSlider.style.display = 'none';
+        sliderDots.style.display = 'none';
+        fullMenuContainer.style.display = 'grid';
+        viewAllButton.textContent = "닫기";
+        removeDragEvents();
+      } else {
+        hamburgerSlider.style.display = 'block';
+        sliderDots.style.display = 'flex';
+        fullMenuContainer.style.display = 'none';
+        viewAllButton.textContent = "전체 메뉴보기";
+        currentSlide = 0;
+        updateSlider();
+        addDragEvents();
+      }
+    }
+
+    function updateSlider() {
+      if (!isViewAll) {
+        const slides = document.querySelectorAll(".hamburger_category_slider > div");
+        slides.forEach((slide, index) => {
+          slide.classList.remove("active");
+        });
+        if (slides[currentSlide]) {
+          slides[currentSlide].classList.add("active");
+        }
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll(".dot");
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentSlide);
+      });
+    }
+
+    // 초기 로드 시 실행
+    document.addEventListener("DOMContentLoaded", async function () {
+      if (memberId) {
+        console.log('어! memberId가 있네?')
+        const { data: member } = await supabaseClient
+          .from('members')
+          .select('*')
+          .eq('cafe24_id', memberId)
+          .single();
+
+        if (member) {
+          console.log('어! member가 있네?', member)
+          const { data: customSequenceMenu } = await supabaseClient
+            .from('custom_menu_sequence')
+            .select(
+              `menu (
+          name,
+          redirect_url,
+          image_src
+          )`
+            )
+            .eq('member', member.cafe24_id)
+            .order('sequence');
+
+          console.log('어! menuSequence가 있네?', customSequenceMenu)
+          renderCustomMenu(customSequenceMenu);
+          console.log('After render');
+        } else {
+          console.log('어! member가 없네?', member)
+          const defaultMenu = [
+            { menu: { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" } },
+            { menu: { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" } },
+            { menu: { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" } },
+            { menu: { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" } },
+            { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
+            { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
+            { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
+            { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } }
+          ];
+          renderCustomMenu(defaultMenu);
+        }
+      } else {
+        const betweenEditAll = document.getElementById('betweenEditAll');
+        const editCustomMenu = document.getElementById('editCustomMenu');
+        editCustomMenu.style.display = 'none';
+        betweenEditAll.style.display = 'none';
+        console.log('어! memberId가 없네?')
+        const defaultMenu = [
+          { menu: { name: "카카오채널", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H01.png" } },
+          { menu: { name: "다뷰", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H02.png" } },
+          { menu: { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" } },
+          { menu: { name: "캔바디자인", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H04.png" } },
+          { menu: { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" } },
+          { menu: { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" } },
+          { menu: { name: "퍼마블렌드", redirect_url: "/perma/perma.html", image_src: "/web/main_cate_icons/H07.png" } },
+          { menu: { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" } },
+
+          { menu: { name: "렌탈", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=349", image_src: "/web/main_cate_icons/H09.png" } },
+          { menu: { name: "클래스", redirect_url: "https://almondyoung.com/product/list.html?cate_no=86", image_src: "/web/main_cate_icons/H10.png" } },
+          { menu: { name: "샵매매", redirect_url: "https://almondyoung.com/front/php/b/board_list.php?board_no=13", image_src: "/web/main_cate_icons/H11.png" } },
+          { menu: { name: "아몬드뉴스", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H12.png" } },
+          { menu: { name: "저작권 제보", redirect_url: "https://almondyoung.com/event/copyright.html", image_src: "/web/main_cate_icons/H13.png" } },
+          { menu: { name: "최저가신고", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H14.png" } },
+          { menu: { name: "이벤트", redirect_url: "https://pf.kakao.com/_xaxgxazs", image_src: "/web/main_cate_icons/H15.png" } },
+          { menu: { name: "찾아주세요", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H16.png" } },
+
+          { menu: { name: "아몬드티비", redirect_url: "https://almondyoung.com/shop1/front/php/b/board_list.php?board_no=8&is_pcver=T", image_src: "/web/main_cate_icons/H17.png" } },
+          { menu: { name: "속눈썹펌", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=246", image_src: "/web/main_cate_icons/H18.png" } },
+          { menu: { name: "속눈썹연장", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=247", image_src: "/web/main_cate_icons/H19.png" } },
+          { menu: { name: "반영구", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=261", image_src: "/web/main_cate_icons/H20.png" } },
+          { menu: { name: "왁싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=267", image_src: "/web/main_cate_icons/H21.png" } },
+          { menu: { name: "타투", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=271", image_src: "/web/main_cate_icons/H22.png" } },
+          { menu: { name: "네일아트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=28", image_src: "/web/main_cate_icons/H23.png" } },
+          { menu: { name: "피부미용", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=278", image_src: "/web/main_cate_icons/H24.png" } },
+
+          { menu: { name: "헤어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=347", image_src: "/web/main_cate_icons/H25.png" } },
+          { menu: { name: "메이크업", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=43", image_src: "/web/main_cate_icons/H26.png" } },
+          { menu: { name: "피어싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=348", image_src: "/web/main_cate_icons/H27.png" } },
+          { menu: { name: "미용기기", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=290", image_src: "/web/main_cate_icons/H28.png" } },
+          { menu: { name: "인테리어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=44", image_src: "/web/main_cate_icons/H29.png" } }
+        ];
+        renderCustomMenu(defaultMenu);
+      }
+
+      // 편집하기 버튼 이벤트
+      const editCustomMenu = document.getElementById('editCustomMenu');
+      editCustomMenu.addEventListener("click", () => {
+        alert(`editCustomMenu클릭: ${memberId}`)
+        if (memberId != null && memberId.length != 0) {
+          checkAndInsertMember(memberId);
+        }
+      });
+
+      // 전체보기 버튼 이벤트
+      const viewAllButton = document.getElementById("viewAllButton");
+      viewAllButton.addEventListener("click", () => {
+        isViewAll = !isViewAll;
+        toggleFullMenu();
+      });
+    });
+
+    // 기타 유틸리티 함수들
+    function redirectToAppStore() {
+      var isAndroid = /Android/i.test(navigator.userAgent);
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isAndroid) {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.pauseb.projectc";
+      } else if (isIOS) {
+        window.location.href = "https://apps.apple.com/kr/app/%EB%8B%A4%EB%B7%B0/id6452912806?platform=iphone";
+      } else {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.lcnine.daview";
+      }
+    }
+
+    async function checkAndInsertMember(memberId) {
+      try {
+        let { data, error, status } = await supabaseClient
+          .from('members')
+          .select('*')
+          .eq('cafe24_id', memberId)
+          .single();
+
+        if (error && status !== 406) {
+          console.error('멤버 확인 중 오류:', error.message);
+          return;
+        }
+
+        if (data) {
+          console.log('이미 존재하는 멤버:', data);
+        } else {
+          const { data: insertData, error: insertError } = await supabaseClient
+            .from('members')
+            .insert([{ cafe24_id: memberId }]);
+
+          if (insertError) {
+            console.error('멤버 추가 중 오류:', insertError.message);
+            return;
+          }
+          console.log('멤버 추가 성공:', insertData);
+        }
+      } catch (err) {
+        console.error('멤버 확인/추가 중 예외 발생:', err);
+      }
+    }
+
+    // 스타일 업데이트
+    const style = document.createElement('style');
+    style.textContent = `
+        .full-menu-container {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+          padding: 20px;
+          background-color: white;
+        }
+
+        .full-menu-container a {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          gap: 8px;
+        }
+
+        .full-menu-container img {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;  /* 이미지 모서리 둥글게 */
+        }
+
+        .full-menu-container span {
+          font-size: 12px;
+          color: #333;
+          text-align: center;
+        }
+      `;
+    document.head.appendChild(style);
+  </script>
+</div>

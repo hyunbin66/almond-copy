@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "//www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+
+<head>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, user-scalable=yes">
+  <!--@css(/layout/basic/css/ec-base-product.css)-->
+  <!--@css(/layout/basic/css/ec-base-paginate.css)-->
+  <!--@css(/layout/basic/css/ec-base-ui.css)-->
+  <!--@css(/layout/basic/css/ec-base-help.css)-->
+  <!--@css(/layout/basic/css/ec-base-button.css)-->
+  <!--@css(/layout/basic/css/ec-base-box.css)-->
+  <!--@css(/layout/basic/css/ec-base-layer.css)-->
+  <!--@css(/layout/basic/css/ec-base-table.css)-->
+  <!--@css(/layout/basic/css/ec-base-fold.css)-->
+  <!--@css(/layout/basic/css/ec-base-prdInfo.css)-->
+  <!--@css(/layout/basic/css/ec-base-tooltip.css)-->
+  <!--@css(/layout/basic/css/ec-base-tab.css)-->
+
+  <!-- sakura.css 추가 -->
+  <!-- <link rel="stylesheet" href="/web/upload/kdesign/js/sakura.css">
+    
+    <!--@css(/gridsystem/resource/css/vendor.css)-->
+  <!--@css(/gridsystem/resource/css/common.css)-->
+  <!--@css(/gridsystem/resource/css/layout.css)-->
+  <!--@css(/gridsystem/resource/css/font/font.css)-->
+
+  <!-- 스마트디자인에서는 JQuery 1.4.4 버전이 내장되어있습니다. 추가로 호출하면 충돌이 생길 수 있습니다. -->
+  <!--@js(/gridsystem/resource/js/jquery.plugin.js)-->
+  <!--@js(/gridsystem/resource/js/common.js)-->
+  <!--@js(/js/jquery.rwdImageMaps.min.js)-->
+  <!--@css(/index.css)-->
+  <!-- maphilight 플러그인 추가 -->
+  <script src="https://mattstow.com/js/ios-orientationchange-fix.min.js"></script>
+  <!--@import(/_kd/base.html)--><!-- 케이디자인 베이스 -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+  <style>
+    .slick-slide>div {
+      font-size: 0;
+    }
+
+    .slick-slide .item {
+      overflow: hidden;
+    }
+
+    .slick-slide img {
+      width: 100%;
+      transition: all 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+    }
+
+    .slick-slide.slick-active img {
+      transform: scale(1);
+      animation: slickAni 1.5s 1 ease-in-out forwards;
+    }
+
+    /*
+    .progress::-webkit-scrollbar {
+        display: none;  
+    }
+    .progress {position: absolute;    left: 0;    top: 0;   width: 300px;background: #000;text-align: center;overflow-y: scroll;-ms-overflow-style: none;     scrollbar-width: none; }
+    .progress div {float: left;    width: 300px;    height: 85px;padding: 10px 0;cursor: pointer;color: white;}
+    .progress div:last-child {margin-right: 0;}
+    .progress div span.progressBar {display: none;width: 300px;height: 4px;background-color: rgba(255, 255, 255, 0.4);}
+    .progress div span.progressBar .inProgress {display: none;width: 0%;height: 4px;background-color: rgba(255, 255, 255, 1);}
+    span.inProgress2 {    height: 5px;    line-height: 5px;    border-radius: 1em;    width: 0px;    background-color: white;    transition: width 0.1s ease 0s;    animation-name: iuHmtk;    animation-duration: 6s;    animation-timing-function: ease-in-out;    animation-delay: 1s;}
+    .progress div span.list_item{display: flow-root;    padding: 5px;}
+    .progress div span.list_item span.title {    float: left;    margin-top: 20px;    font-size: 16px;    padding-left: 15px;}
+    .progress div span.list_item span.content {    float: left; padding-left: 15px; } 
+*/
+    .slick-slide {
+      float: left;
+      transition: all ease-in-out .3s;
+      opacity: 0;
+    }
+
+    .slick-active {
+      opacity: .5;
+    }
+
+    .slick-current {
+      opacity: 1;
+    }
+
+    .progress {
+      text-align: center;
+      margin: 0 auto;
+      margin-bottom: 10px;
+      display: block;
+      position: relative;
+      width: 15%;
+      height: 15px;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #f5f5f5;
+      background-image: linear-gradient(to right, black, black);
+      background-repeat: no-repeat;
+      background-size: 20% 100%;
+      transition: background-size .4s ease-in-out;
+    }
+
+    .line {
+      padding: 10px;
+      display: flex;
+    }
+
+    .line a {
+      width: 25%;
+      text-align: center;
+    }
+
+    .line a span {
+      text-align: center;
+      font-size: 13px;
+      display: inline-table;
+      width: 100%;
+    }
+
+    .content {
+      margin: 10px auto;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .slider_another {
+      margin: 10px auto -10px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .prev-btn {
+      font-size: 30px;
+      fill: orange;
+    }
+
+    .next-btn {
+      font-size: 30px;
+      fill: orange;
+    }
+
+    iframe {
+      border: 0px;
+    }
+
+    /* 유령 애니메이션을 위한 CSS */
+    #halloween-ghost-container {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      /* 유령이 다른 요소들보다 앞에 나오도록 설정 */
+      pointer-events: none;
+    }
+
+    .ghost-wrapper {
+      animation: float 10s linear infinite;
+      pointer-events: auto;
+    }
+
+    .ghost {
+      position: absolute;
+      top: 50%;
+      left: -100px;
+      width: 100px;
+      height: 100px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      /* 부드러운 사라짐 효과 추가 */
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+      }
+
+      50% {
+        transform: translateY(-50px) translateX(80vw);
+      }
+
+      100% {
+        transform: translateY(0) translateX(100vw);
+      }
+    }
+
+    @keyframes shrink {
+      0% {
+        transform: scaleY(1);
+        opacity: 1;
+        /* 시작할 때는 완전하게 보임 */
+      }
+
+      100% {
+        transform: scaleY(0);
+        /* 쪼그라듦 */
+        opacity: 0;
+        /* 서서히 사라짐 */
+      }
+    }
+
+    .point-text {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 16px;
+      color: black;
+      animation: riseUp 2s forwards;
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    @keyframes riseUp {
+      0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-50px);
+      }
+    }
+  </style>
+</head>
+
+<body id="main" class="dnd">
+
+  <!-- 상단 띠배너 -->
+  <!--@import(/_kd/import/bn_top.html)-->
+  <!-- // 상단 띠배너 -->
+
+  <!-- 유령 애니메이션 추가 -->
+  <div id="halloween-ghost-container"></div>
+
+  <!-- 헤더 -->
+  <!--@import(/_kd/import/header2.html)-->
+  <!-- // 헤더 -->
+
+  <!-- 햄버거 메뉴 -->
+  <!--@import(/layout/basic/sidebar2.html)-->
+  <!-- // 햄버거 메뉴 -->
+
+  <div id="wrap">
+    <div id="container">
+      <div id="contents">
+        <!--@contents-->
+      </div>
+      <hr class="layout" />
+    </div>
+    <hr class="layout" />
+  </div>
+  <hr class="layout" />
+
+  <!-- 제작팝업 -->
+  <!--@import(/_kd/import/popup/popup.html)-->
+  <!-- // 제작팝업 -->
+
+  <!-- 좌측 고정 배너 -->
+  <!--@import(/_kd/import/bn_right.html)-->
+  <!-- // 좌측 고정 배너 -->
+
+  <!-- 푸터 -->
+  <!--@import(/_kd/import/footer.html)-->
+  <!-- // 푸터 -->
+
+  <!-- 퀵메뉴 -->
+  <!--@import(/_kd/import/quick_menu.html)-->
+  <!-- // 퀵메뉴 -->
+
+  <!-- 인덱스 js -->
+  <!--@js(/index.js)-->
+  <!-- // 인덱스 js -->
+
+  <!-- body -->
+  <div module="Popup_MultiPopup">
+    <!--
+        $banner_popup_no =
+        ※ 노출시킬 팝업의 ID를 숫자로 넣어주세요.
+        -->
+    {$popup}
+  </div>
+  <div module="Popup_MultiBanner">
+    <!--
+        $banner_popup_no =
+        ※ 노출시킬 배너의 ID를 숫자로 넣어주세요.
+        -->
+    {$banner}
+  </div>
+
+  <!--
+    • 케이디자인의 배너는 배너매니저를 설치하여 작업이 되었습니다.
+    배너매니저는 앱스토어에서 배너매니저를 검색하여 설치 또는 아래 링크를 통해 설치해주세요.
+    링크 : https://store.cafe24.com/kr/apps/2798
+    설치 후 배너 영역은 배너매니저 매뉴얼과 그룹코드를 참고하여 세팅해주세요.
+    배너매니저를 미설치하시거나 그룹코드가 다를 경우 정상적으로 나오지 않을 수 있습니다.
+-->
+
+  <!-- 배너매니저 스크립트 코드 -->
+  <!--@import(/_kd/import/bn_code.html)-->
+  <!-- // 배너매니저 스크립트 코드 -->
+
+  <!-- sakura.js 스크립트 추가 -->
+  <script src="/web/upload/kdesign/js/sakura.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('body').sakura();
+    });
+  </script>
+
+  <!-- 유령 스크립트 추가
+<script>
+    const ghostImages = [
+        '/web/upload/kdesign/event/ghost001.png',
+        '/web/upload/kdesign/event/ghost002.png',
+        '/web/upload/kdesign/event/ghost003.png',
+        '/web/upload/kdesign/event/ghost004.png',
+        '/web/upload/kdesign/event/ghost005.png',
+        '/web/upload/kdesign/event/ghost006.png'
+    ];
+
+    function createGhost() {
+        const showGhost = window.localStorage.getItem("showGhost");
+       	if (showGhost === "false") return; 
+        
+        const ghostWrapper = document.createElement('div');
+        ghostWrapper.classList.add('ghost-wrapper');
+        ghostWrapper.dataset["eventId"] = crypto.randomUUID();
+
+        const ghost = document.createElement('div');
+        ghost.classList.add('ghost');
+
+        const randomImage = ghostImages[Math.floor(Math.random() * ghostImages.length)];
+        ghost.style.backgroundImage = `url('${randomImage}')`;
+
+        ghostWrapper.appendChild(ghost)
+        document.getElementById('halloween-ghost-container').appendChild(ghostWrapper);
+
+        // 랜덤한 위치와 애니메이션 시간 설정
+        ghost.style.top = Math.random() * 80 + 'vh';
+        ghost.style.left = '-100px';
+        ghost.style.animationDuration = (Math.random() * 5 + 5) + 's';
+
+        // 클릭 시 유령 쪼그라들기 실행
+        ghost.addEventListener('click', function() {
+            // 클릭된 순간 쪼그라드는 애니메이션 실행
+            ghost.style.animation = 'shrink 2s forwards'; // 쪼그라들며 사라짐
+        });
+
+        // 10초 후 유령 제거
+        setTimeout(() => {
+          ghostWrapper.remove();
+        }, 10000);
+    }
+
+    // 5초마다 유령 생성
+    setInterval(createGhost, 5000);
+</script>
+-->
+
+</body>
+
+</html>

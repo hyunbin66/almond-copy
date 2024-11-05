@@ -1,0 +1,120 @@
+<!--@css(/layout/basic/css/slideMenu.css)-->
+<!--@js(/layout/basic/js/slide_menu.js)-->
+<aside id="kd-aside" module="layout_slidePackage">
+  <div module="myshop_main">
+    <div class="kd-aside-log kd-contents">
+      <a module="Layout_stateLogoff" href="/member/login.html" class="kd-aside-my">로그인하고 혜택을 받으세요<img
+          src="/web/upload/kdesign/ico/ic_m_quick_arrow.svg" alt="화살표"></a>
+      <a module="Layout_stateLogoff" href="/member/agreement.html" class="kd-aside-func">회원가입</a>
+      <a module="Layout_statelogon" href="/myshop/index.html" class="kd-aside-my">안녕하세요 {$name}님<img
+          src="/web/upload/kdesign/ico/ic_m_quick_arrow.svg" alt="화살표"></a>
+      <a module="Layout_statelogon" href="{$action_logout}" class="kd-aside-func">로그아웃</a>
+    </div>
+  </div>
+
+  <div class="kd-aside-menu">
+    <ul class="kd-clear">
+      <li class="kd-fleft"><a href="/order/basket.html"><img src="/web/upload/kdesign/ico/ic_side_cart.svg"
+            alt="장바구니"><span>장바구니</span></a></li>
+      <li class="kd-fleft"><a href="/myshop/order/list.html"><img src="/web/upload/kdesign/ico/ic_side_order.svg"
+            alt="주문조회"><span>주문조회</span></a></li>
+      <li class="kd-fleft"><a href="/myshop/index.html"><img src="/web/upload/kdesign/ico/ic_side_my.png"
+            alt="마이쇼핑"><span>마이쇼핑</span></a></li>
+      <li class="kd-fleft"><a href="/myshop/recent_list.html"><img src="/web/upload/kdesign/ico/ic_side_history.svg"
+            alt="최근본상품"><span>최근 본 상품</span></a></li>
+
+    </ul>
+  </div>
+
+  <div module="Layout_SearchHeader" class="kd-searchBox" id="{$search_box_id}">
+    <!--@css(/css/module/layout/searchHeader.css)-->
+    <!--
+          $category_page=/product/list.html
+      -->
+    <div class="kd-contents">
+      <fieldset>
+        <legend>검색</legend>
+        <div class="searchForm">{$form.keyword}<input class="kd-btn-search" type="image"
+            src="/web/upload/kdesign/ico/ic_side_search.svg" alt="검색" onclick="{$action_search_submit}" /></div>
+      </fieldset>
+      <div module="search_hotkeyword" class="kd-search-keyword">
+        <ul class="kd-keyword">
+          <li><a href="{$hot_keyword_search_url}">{$hot_keyword_name}</a></li>
+          <li><a href="{$hot_keyword_search_url}">{$hot_keyword_name}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="kd-cate-wrap">
+    <div class="kd-contents">
+      <h2><img src="/web/upload/kdesign/ico/ic_side_cate.svg" alt="전체카테고리">전체 카테고리</h2>
+
+      <!-- 카테고리 -->
+      <!--@import(/_kd/import/category.html)-->
+      <!-- // 카테고리 -->
+
+      <div id="slideProjectList" module="layout_project">
+        <h2 class="selected"><img src="/web/upload/kdesign/ico/ic_side_cate.svg" alt="전체카테고리">기획전</h2>
+        <ul class="categoryList kd-flex">
+          <li id="cate{$cate_no}">
+            <a href="#none" class="cate" cate="{$param}">{$category_text|cut 25}</a>
+          </li>
+          <li id="cate{$cate_no}">
+            <a href="#none" class="cate" cate="{$param}">{$category_text|cut 25}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="bookmarkCategory" id="bookmarkCategory">
+        <h2 class="selected">즐겨찾기<button type="button" class="icoCategory">펼침</button></h2>
+        <p class="bookmarkEmpty" id="bookmarkEmpty">자주쓰는 카테고리 우측에 <img
+            src="//img.echosting.cafe24.com/skin/mobile_ko_KR/layout/ico_bookmark_star.png" alt="즐겨찾기"> 을 눌러주세요.<br>쉽게
+          카테고리를 이용할 수 있습니다.</p>
+        <div id="bookmartCateArea" class="bookmarkCategory"></div>
+      </div>
+    </div>
+
+    <!-- 멀티샵 -->
+    <div class="kd-multishop kd-contents" module="Layout_multishopList" id="slideMultishopList">
+      <h2 class="kd-multishop-title"><img src="/web/upload/kdesign/ico/ic_language.svg" alt="언어">{$translate_language}
+      </h2>
+      <ul module="multishop_listitem" class="kd-flex">
+        <li class="{$selected_class}">
+          <a href="//{$shop_domain}/">
+            <span class="name">{$locale_language}</span>
+          </a>
+        </li>
+        <li class="{$selected_class}">
+          <a href="//{$shop_domain}/">
+            <span class="name">{$locale_language}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- // 멀티샵 -->
+  </div>
+
+  <!-- 전화걸기, 카카오톡 채널추가 -->
+  <div module="Layout_footer" class="kd-aside-cs kd-contents">
+    <h2>고객센터 <span>{$phone}</span></h2>
+    <p>{$runtime}</p>
+    <ul class="kd-clear">
+      <li class="kd-fleft"><a href="tel:{$phone}" target="_blank"><img src="/web/upload/kdesign/btn/btn_side_call.svg"
+            alt="전화걸기"></a></li>
+      <li class="kd-fleft"><a href="#none" target="_blank"><img src="/web/upload/kdesign/btn/btn_side_kakao.svg"
+            alt="카카오챗 채널추가"></a></li>
+    </ul>
+  </div>
+  <!-- // 전화걸기, 카카오톡 채널추가 -->
+
+  <!-- SNS 정보 -->
+  <ul class="kd-list-sns kd-flex">
+    <li><a href="#none" target="_blank"><img src="/web/upload/kdesign/ico/ic_sns_facebook.svg" alt="페이스북"></a></li>
+    <li><a href="#none" target="_blank"><img src="/web/upload/kdesign/ico/ic_sns_insta.svg" alt="인스타그램"></a></li>
+    <li><a href="#none" target="_blank"><img src="/web/upload/kdesign/ico/ic_sns_kakao.svg" alt="카카오채널"></a></li>
+  </ul>
+  <!-- // SNS 정보 -->
+
+  <!-- 카테고리 닫기 버튼 -->
+  <a href="#none" class="kd-aside-close"><img src="/web/upload/kdesign/btn/btn_quick_close.svg" alt="닫기"></a>
+</aside>

@@ -1,0 +1,51 @@
+.hamburger_category_slider {
+  user-select: none;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-user-drag: none;
+}
+
+.hamburger_category_slider:active {
+  cursor: grabbing;
+}
+
+.hamburger_category_slider>div {
+  display: none;
+}
+
+.hamburger_category_slider>div.active {
+  display: block;
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #F7AF00;
+}
+
+.view-all-text {
+  display: block;
+  margin: 10px auto;
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+  text-align: center;
+}
+
+.view-all-text:hover {
+  color: #666;
+}

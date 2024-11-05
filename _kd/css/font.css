@@ -1,0 +1,74 @@
+/*폰트*/
+body {
+  font-family: "Pretendard", "Roboto", sans-serif;
+  font-weight: 400;
+  word-break: keep-all;
+}
+
+/* Pretendard */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 300;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Pretendard-Light.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Pretendard-Light.woff") format("woff"),
+    url("/web/upload/kdesign/font/Pretendard-Light.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Pretendard-Regular.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Pretendard-Regular.woff") format("woff"),
+    url("/web/upload/kdesign/font/Pretendard-Regular.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 500;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Pretendard-Medium.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Pretendard-Medium.woff") format("woff"),
+    url("/web/upload/kdesign/font/Pretendard-Medium.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 600;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Pretendard-Bold.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Pretendard-Bold.woff") format("woff"),
+    url("/web/upload/kdesign/font/Pretendard-Bold.ttf") format("ttf");
+}
+
+/* Roboto */
+@font-face {
+  font-family: "Roboto";
+  font-weight: 300;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Roboto-Light.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Roboto-Light.woff") format("woff"),
+    url("/web/upload/kdesign/font/Roboto-Light.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Roboto-Regular.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Roboto-Regular.woff") format("woff"),
+    url("/web/upload/kdesign/font/Roboto-Regular.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 500;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Roboto-Medium.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Roboto-Medium.woff") format("woff"),
+    url("/web/upload/kdesign/font/Roboto-Medium.ttf") format("ttf");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 600;
+  font-display: swap;
+  src: url("/web/upload/kdesign/font/Roboto-Bold.woff2") format("woff2"),
+    url("/web/upload/kdesign/font/Roboto-Bold.woff") format("woff"),
+    url("/web/upload/kdesign/font/Roboto-Bold.ttf") format("ttf");
+}

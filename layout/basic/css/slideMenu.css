@@ -1,0 +1,324 @@
+/* ----------------------------- kd css ----------------------------- */
+
+body {
+  height: 100%;
+}
+/* #wrap { min-height:100%; } */
+
+/* 확장 */
+html.expand body {
+  overflow: hidden;
+}
+html.expand #container {
+  -webket-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+}
+html.expand #kd-aside {
+  overflow-x: hidden;
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+  -webket-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+}
+#btnFoldLayout {
+  font-size: 0;
+}
+
+/* kd-aside */
+#kd-aside {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0;
+  z-index: 10;
+  overflow: auto;
+  overflow-x: hidden;
+  width: 90%;
+  max-width: 500px;
+  background-color: #fff;
+  letter-spacing: -0.03em;
+  z-index: 10;
+  -webkit-transform: translate(-100%, 0);
+  transform: translate(-100%, 0);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
+  visibility: hidden;
+}
+#kd-aside .xans-myshop-main {
+  padding: 20px 0;
+  border-bottom: 0px solid #f5f5f5;
+}
+#kd-aside .kd-aside-log {
+  font-size: 0;
+}
+#kd-aside .kd-aside-log a {
+  display: inline-block;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-weight: 500;
+  color: #999;
+}
+#kd-aside .kd-aside-log a.kd-aside-my {
+  font-weight: bold;
+  color: #191919;
+  letter-spacing: -0.1em;
+}
+#kd-aside .kd-aside-log a.kd-aside-my img {
+  width: 6px;
+  margin: 0 5px 0 8px;
+  vertical-align: middle;
+}
+#kd-aside .kd-aside-log a.kd-aside-func {
+  border-bottom: 1px solid #999;
+  letter-spacing: -0.1em;
+}
+
+#kd-aside .kd-aside-menu {
+  border-bottom: 0px solid #f5f5f5;
+}
+#kd-aside .kd-aside-menu ul li {
+  width: 25%;
+  text-align: center;
+  margin: 15px 0;
+}
+#kd-aside .kd-aside-menu ul li a {
+  display: block;
+  font-size: 16px;
+  color: #191919;
+}
+#kd-aside .kd-aside-menu ul li a img {
+  max-height: 30px;
+}
+#kd-aside .kd-aside-menu ul li a span {
+  display: block;
+  margin-top: 10px;
+}
+
+/* 카테고리 리스트 */
+#kd-aside #kd-cate-wrap {
+  margin-top: 20px;
+  border-bottom: 12px solid #f5f5f5;
+}
+#kd-aside #kd-cate-wrap h2 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #191919;
+}
+#kd-aside #kd-cate-wrap h2 img {
+  max-width: 18px;
+  margin-right: 8px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb {
+  padding-bottom: 8px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li {
+  position: relative;
+  width: 50%;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > a {
+  display: block;
+  font-size: 16px;
+  color: #666;
+  padding: 15px 0;
+  font-weight: 500;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > a .view,
+#kd-aside #kd-cate-wrap .kd-gnb > li > a button {
+  display: none;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu {
+  margin-left: 10px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li .cate {
+  display: block;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li.selected > ul {
+  display: block;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li > ul {
+  display: none;
+  margin-left: 10px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li > ul > li > .cate {
+  padding: 10px 0;
+  font-size: 13px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li > ul > li a {
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu > li ul > li.selected a {
+  background: url("/web/upload/kdesign/btn/m_btn_side_top.svg") no-repeat 100%
+    7px;
+}
+#kd-aside
+  #kd-cate-wrap
+  .kd-gnb
+  > li
+  > .slideSubMenu
+  > li.selected
+  > ul
+  > li
+  > ul {
+  display: none;
+  margin-left: 10px;
+}
+#kd-aside
+  #kd-cate-wrap
+  .kd-gnb
+  > li
+  > .slideSubMenu
+  > li.selected
+  > ul
+  > li.selected
+  > ul {
+  display: block;
+}
+#kd-aside
+  #kd-cate-wrap
+  .kd-gnb
+  > li
+  > .slideSubMenu
+  > li.selected
+  > ul
+  > li.selected
+  > ul
+  li
+  a {
+  background: none;
+  font-size: 12px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu .view {
+  display: none;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li > .slideSubMenu button {
+  display: none;
+}
+
+#kd-aside #kd-cate-wrap .kd-gnb > li.kd-category .kd-sub-category {
+  display: none;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li.kd-category.selected .kd-sub-category {
+  display: block;
+  margin-left: 8px;
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li.kd-category .kd-sub-category > li {
+}
+#kd-aside #kd-cate-wrap .kd-gnb > li.kd-category .kd-sub-category > li > a {
+  display: block;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 닫기 버튼 */
+.kd-aside-close {
+  position: absolute;
+  top: 18px;
+  right: 6%;
+}
+.kd-aside-close img {
+  max-width: 22px;
+}
+
+/* 기획전 */
+#kd-aside #slideProjectList {
+  position: relative;
+  padding: 26px 0 8px;
+}
+#kd-aside #slideProjectList:before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  right: -30px;
+  top: 0;
+  height: 6px;
+  background: #f5f5f5;
+}
+#kd-aside #slideProjectList .categoryList > li {
+  position: relative;
+  width: 50%;
+}
+#kd-aside #slideProjectList .categoryList > li > a {
+  display: block;
+  font-size: 16px;
+  color: #666;
+  padding: 15px 0;
+  font-weight: 500;
+}
+
+/* 멀티쇼핑몰 */
+#kd-aside #kd-cate-wrap .kd-multishop {
+  position: relative;
+  padding: 27px 6% 8px;
+  border-top: 6px solid #f5f5f5;
+}
+#kd-aside #kd-cate-wrap .kd-multishop .xans-multishop-listitem {
+}
+#kd-aside #kd-cate-wrap .kd-multishop .xans-multishop-listitem.selected a {
+  color: #191919;
+}
+#kd-aside #kd-cate-wrap .kd-multishop .xans-multishop-listitem li {
+  width: 50%;
+}
+#kd-aside #kd-cate-wrap .kd-multishop .xans-multishop-listitem li.selected a {
+  color: #191919;
+}
+#kd-aside #kd-cate-wrap .kd-multishop .xans-multishop-listitem li a {
+  display: block;
+  font-size: 16px;
+  color: #999;
+  padding: 15px 0;
+}
+
+/* 고객센터 */
+#kd-aside .kd-aside-cs {
+  padding: 27px 0 30px;
+}
+#kd-aside .kd-aside-cs h2 {
+  font-size: 15px;
+  font-weight: 500;
+}
+#kd-aside .kd-aside-cs h2 span {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 19px;
+}
+#kd-aside .kd-aside-cs p {
+  padding: 7px 0 20px;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #999;
+}
+#kd-aside .kd-aside-cs ul li:first-child {
+  margin-right: 10px;
+}
+#kd-aside .kd-aside-cs ul li a {
+  display: block;
+}
+#kd-aside .kd-aside-cs ul li a img {
+  max-height: 40px;
+}
+
+/* sns */
+#kd-aside .kd-list-sns {
+  justify-content: center;
+  padding: 30px;
+  background: #f5f5f5;
+}
+#kd-aside .kd-list-sns li {
+  margin-left: 40px;
+}
+#kd-aside .kd-list-sns li:first-child {
+  margin-left: 0;
+}
+#kd-aside .kd-list-sns li a {
+  display: block;
+}
+
+#kd-aside .bookmarkCategory {
+  display: none;
+}

@@ -1,0 +1,706 @@
+<!--@layout(/layout/basic/main.html)-->
+
+<!---------------------------------------------------------------------------------------------------
+
+	[ 필독 기본 안내 ]
+	스킨명 : 체리쉬 젤리옐로
+	언어 : 한국어
+	제작년도 : 2022년 11월 (이후 카페24에서 업데이트하여 새롭게 추가된 기능들은 작동하지 않거나, 호환되지 않을 수 있습니다.) 
+
+    - html 수정 전 꼭!! 파일을 백업하시길 권장해드립니다.
+    편집 및 수정에 제한을 두고 있지 않으나, 수정 하시다가 발생하신 문제에 대해서 책임지지 않으며, 복구 요청을 해주셔도 복구가 불가능합니다.
+    - @import, @css, @js에 마우스를 올리시면 [파일열기] 버튼을 통해 각각 페이지의 수정이 가능합니다. 자세한 수정방법은 매뉴얼을 확인해주세요.
+    - 스킨에 설정된 관리자 기능 내의 스타일만 지원하며, 이 외 추가적으로 설정하신 기능의 스타일이나 레이아웃의 틀어짐이 발생하신 경우 스킨의 오류가 아니며, 수정요청 시 비용이 발생할 수 있습니다.
+    - 추가 작업 문의 또는 세팅형으로 변경하시고 싶으실 경우 케이디자인 고객센터로 문의주시거나 이메일로 보내주세요.
+    (단, 세팅형으로 변경하실 경우 아무 세팅하지 않은 초기 소스코드 백업이 되어있어야 하며, 케이디자인을 통해 복구 요청을 주실경우 스킨 복구 비용이 발생하실수 있습니다.)
+
+    [ 필독 ]
+    해당 쇼핑몰의 디자인 및 문서는 케이디자인에서 제작 되었습니다.
+    스킨은 해당 스킨의 저작권이 아닌 라이센스를 구매하시는 것이며,
+    디자인은 1개의 몰에서만 사용이 가능하며, 편집 및 수정이 가능합니다.
+    단, 디자인의 무단복사 및 재배포는 엄격히 규정하고 있으며, 저작권 침해로 법적 책임의 대상이 될 수 있습니다.
+    재판매, 양도, 임대 등의 사유가 있으신 경우 꼭 사전에 케이디자인과 상의 부탁드립니다.
+
+    - 홈페이지 : [https://kdesigns.co.kr/]
+    - 고객센터 : 070-5147-8469
+    - 이메일 : [maskbuy@naver.com]
+
+    [ 배너매니저 안내 ]
+    - 케이디자인의 배너는 배너매니저를 설치하여 작업이 되어 배너매니저를 미설치 하시거나, 그룹코드를 다르게 등록하셨을 경우 정상적으로 나오지 않을 수 있습니다.
+    배너매니저는 앱스토어에서 배너매니저를 검색하여 설치 또는 아래 링크를 통해 설치하신 후 배너매니저 매뉴얼과 그룹코드를 참고하여 세팅해주세요.
+
+    링크 : https://store.cafe24.com/kr/apps/2798
+
+--------------------------------------------------------------------------------------------------->
+
+<!-- 메인 슬라이드 -->
+
+<style>
+  .slick-slide>div {
+    font-size: 0;
+  }
+
+  .slick-slide .item {
+    overflow: hidden;
+  }
+
+  .slick-slide img {
+    width: 100%;
+    transition: all 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+
+  .slick-slide.slick-active img {
+    transform: scale(1);
+    animation: slickAni 1.5s 1 ease-in-out forwards;
+  }
+
+  /*
+  .progress::-webkit-scrollbar {
+      display: none;  
+  }
+  .progress {position: absolute;    left: 0;    top: 0;   width: 300px;background: #000;text-align: center;overflow-y: scroll;-ms-overflow-style: none;     scrollbar-width: none; }
+  .progress div {float: left;    width: 300px;    height: 85px;padding: 10px 0;cursor: pointer;color: white;}
+  .progress div:last-child {margin-right: 0;}
+  .progress div span.progressBar {display: none;width: 300px;height: 4px;background-color: rgba(255, 255, 255, 0.4);}
+  .progress div span.progressBar .inProgress {display: none;width: 0%;height: 4px;background-color: rgba(255, 255, 255, 1);}
+  span.inProgress2 {    height: 5px;    line-height: 5px;    border-radius: 1em;    width: 0px;    background-color: white;    transition: width 0.1s ease 0s;    animation-name: iuHmtk;    animation-duration: 6s;    animation-timing-function: ease-in-out;    animation-delay: 1s;}
+  .progress div span.list_item{display: flow-root;    padding: 5px;}
+  .progress div span.list_item span.title {    float: left;    margin-top: 20px;    font-size: 16px;    padding-left: 15px;}
+  .progress div span.list_item span.content {    float: left; padding-left: 15px; } 
+*/
+  .slick-slide {
+    float: left;
+    transition: all ease-in-out .3s;
+    opacity: 0;
+  }
+
+  .slick-active {
+    opacity: .5;
+  }
+
+  .slick-current {
+    opacity: 1;
+  }
+
+  .progress {
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    display: block;
+    position: relative;
+    width: 15%;
+    height: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(to right, black, black);
+    background-repeat: no-repeat;
+    background-size: 20% 100%;
+    transition: background-size .4s ease-in-out;
+  }
+
+  .line {
+    padding: 10px;
+    display: flex;
+  }
+
+  .line a {
+    width: 25%;
+    text-align: center;
+  }
+
+  .line a span {
+    text-align: center;
+    font-size: 13px;
+    display: inline-table;
+    width: 100%;
+  }
+
+  .content {
+    margin: 30px auto;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .slider_another {
+    margin: 10px auto -10px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .prev-btn {
+    font-size: 30px;
+    fill: orange;
+  }
+
+  .next-btn {
+    font-size: 30px;
+    fill: orange;
+  }
+
+
+  #search-btn {
+    height: 338px;
+    width: 194px;
+    margin-right: 10px;
+    position: relative;
+    border-radius: 0.7em;
+    display: block;
+    background-color: rgb(237 166 80);
+  }
+
+  #search-btn img {
+    border-radius: 0.7em;
+    height: 100%;
+  }
+
+  #search-btn span.title {
+    position: absolute;
+    bottom: 15px;
+    font-size: 15px;
+    left: 0;
+    width: 192px;
+    z-index: 2;
+    text-align: center;
+    color: rgb(255, 255, 255);
+  }
+
+  img.overlay {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+  }
+
+  #search-overlay {
+    display: none;
+    position: absolute;
+    max-width: 500px;
+    top: 0;
+    background: white;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    z-index: 991;
+  }
+
+  #overlay-close-btn {
+    position: absolute;
+    top: 0.9rem;
+    width: 60px;
+    height: 52px;
+    right: 1em;
+    z-index: 1000;
+    color: black;
+    font-weight: 900;
+    background: #fff;
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="/web/upload/kdesign/js/slick.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  var j220 = jQuery.noConflict();
+</script>
+<script>
+  j220(document).ready(function () {
+    var $slider = j220('.slider_another');
+    var $progressBar = j220('.progress');
+    var $progressBarLabel = j220('.slider__label');
+
+    $slider.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+      var calc = ((nextSlide) / (slick.slideCount - 1)) * 100 + 20;
+
+      $progressBar
+        .css('background-size', calc + '% 100%')
+        .attr('aria-valuenow', calc);
+
+      $progressBarLabel.text(calc + '% completed');
+    });
+
+    $slider.slick({
+      arrows: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      prevArrow: true,
+      nextArrow: true,
+      speed: 400
+    });
+    j220(".prev-btn").click(function () {
+      j220(".slider_another").slick("slickPrev");
+    });
+
+    j220(".next-btn").click(function () {
+      j220(".slider_another").slick("slickNext");
+    });
+  });
+
+
+
+  j220(document).ready(function () {
+    j220('.nav-toggle').click(function () {
+      //get collapse content selector
+      var collapse_content_selector = $(this).attr('href');
+
+      //make the collapse content to be shown or hide
+      var toggle_switch = j220(this);
+      j220(collapse_content_selector).toggle(function () {
+        if (j220(this).css('display') == 'none') {
+          //change the button label to be 'Show'
+          toggle_switch.html('Show');
+        } else {
+          //change the button label to be 'Hide'
+          toggle_switch.html('Hide');
+        }
+      });
+    });
+
+  });
+
+
+  /* search 보이기/숨기기 */
+  j220(document).ready(function () {
+    j220('#overlay-close-btn').click(function () {
+      j220('#search-overlay').fadeOut();
+
+    });
+    j220('#bm_search').click(function () {
+      j220('#search-overlay').fadeIn();
+    });
+
+  });
+</script>
+<div class="kd-bnmain-wrap">
+  <div class="image">
+    <div>
+      <a href="https://m.almondyoung.com/product/list.html?cate_no=345"><img src="/web/upload/kdesign/imgs/CANVAM2.webp"
+          alt="" width="100%"></a>
+    </div>
+  </div>
+  <div class="content">
+    <section class="round-border" style="display:none">
+      <div>
+        <button href="#collapse1" class="nav-toggle" style="width:50px"><img
+            src="/web/upload/NNEditor/20220714/5b8fb2384cf1329a45204df6d3361c52.png" alt="더보기"><span>더보기</span></button>
+      </div>
+      <div id="collapse1" style="display:none">
+        aaa
+      </div>
+    </section>
+    <div class="slider_another">
+      <div>
+        <div class="image">
+          <div class="line">
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=81" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon1.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">신상</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=82" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon2.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">베스트</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=83" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon3.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">세일</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=86" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon4.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">클래스</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=345" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon5.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">디자인/교재</span>
+            </a>
+          </div>
+          <div class="line">
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=299" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon6.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">마케팅</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=346" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon7.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">멤버쉽</span>
+            </a>
+            <a href="#category" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon8.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">이벤트</span>
+            </a>
+            <a href="/perma.html" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon9.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">퍼마블렌드</span>
+            </a>
+            <a href="http://pf.kakao.com/_xaxgxazs/chat" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon10.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">고객센터</span>
+            </a>
+          </div>
+        </div> <!-- end image -->
+      </div>
+      <div>
+        <div class="image">
+          <div class="line">
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=246" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon11.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">속눈썹펌</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=247" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon12.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">속눈썹연장</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=261" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon13.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">반영구</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=267" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon14.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">왁싱</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=271" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon15.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">타투</span>
+            </a>
+          </div>
+          <div class="line">
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=28" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon16.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">네일아트</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=278" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon17.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">피부미용</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=347" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon18.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">헤어</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=43" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon19.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">메이크업</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=348" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon20.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">피어싱</span>
+            </a>
+          </div>
+        </div> <!-- end image -->
+      </div>
+      <div>
+        <div class="image">
+          <div class="line">
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=290" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon21.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">미용기기</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=291" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon22.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">도서</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=44" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon23.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">인테리어</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=45" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon24.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="margin-top:8px"><span style="font-size: 14px;margin-top:8px">생활&위생</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=46" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon25.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">반려동물</span>
+            </a>
+          </div>
+          <div class="line">
+            <a href="https://m.almondyoung.com/board/free/list.html?board_no=101" class="category fold"
+              id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon26.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">중고마켓</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=349" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon27.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">렌탈</span>
+            </a>
+            <a href="https://m.almondyoung.com/product/list.html?cate_no=298" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon28.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">도매몰</span>
+            </a>
+            <a href="https://m.almondyoung.com/board/free/list.html?board_no=1" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon29.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">공지사항</span>
+            </a>
+            <a href="https://m.almondyoung.com/board/free/list.html?board_no=5" class="category fold" id="bm_category">
+              <img src="/web/upload/kdesign/imgs/icons_banners/cicon30.webp" style="width:50px;height:50px" alt=""
+                loading="lazy">
+              <span style="font-size: 14px;margin-top:8px">자유게시판</span>
+            </a>
+          </div>
+        </div> <!-- end image -->
+      </div>
+
+    </div> <!-- end slider -->
+
+    <div class="btn-wrap">
+      <div style="    text-align: center;">
+        <button class="prev-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+            <path
+              d="M0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96L0 416zM128 256c0-6.7 2.8-13 7.7-17.6l112-104c7-6.5 17.2-8.2 25.9-4.4s14.4 12.5 14.4 22l0 208c0 9.5-5.7 18.2-14.4 22s-18.9 2.1-25.9-4.4l-112-104c-4.9-4.5-7.7-10.9-7.7-17.6z" />
+          </svg>
+        </button>
+        <button class="next-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+            <path
+              d="M448 96c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320zM320 256c0 6.7-2.8 13-7.7 17.6l-112 104c-7 6.5-17.2 8.2-25.9 4.4s-14.4-12.5-14.4-22l0-208c0-9.5 5.7-18.2 14.4-22s18.9-2.1 25.9 4.4l112 104c4.9 4.5 7.7 10.9 7.7 17.6z" />
+          </svg>
+        </button>
+        <!--div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                      <span class="slider__label sr-only"> 
+                      </span>
+                  </div-->
+      </div>
+
+
+    </div>
+  </div> <!-- end content -->
+  <div class="swiper-container" df-banner-code="bn-main" hidden>
+    <!--@import(/_kd/import/swiper/swiper02.html)-->
+  </div>
+</div>
+<!-- // 메인 슬라이드 -->
+
+<!-- 바로가기 아이콘 -->
+<div class="kd-bncate-wrap kd-contents kd-mt-60">
+  <ul df-banner-code="bn-cate" hidden class="kd-flex">
+    <li df-banner-clone><a href="{#href}">{#item}<span>{#title}</span></a></li>
+  </ul>
+</div>
+<!-- // 바로가기 아이콘 -->
+
+<!-- 메인분류 01 -->
+
+<div module="product_listmain_33" class="kd-time-wrap kd-mt-60">
+  <!--
+      $count = 10
+      ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+      ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+      $basket_result = /product/add_basket.html
+      $basket_option = /product/basket_option.html
+  -->
+  <div class="kd-main-title">
+    <h2>{$category_title_text}</h2>
+    <a href="/product/list.html?cate_no=27" class="kd-btn-more">전체보기<img
+        src="/web/upload/kdesign/btn/btn_title_more.svg" alt="전체보기"></a>
+  </div>
+  <div class="swiper-container">
+    <ul class="kd-prd-list kd-grid2 swiper-wrapper">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+</div>
+<!-- // 메인분류 01 -->
+
+<div class="kd-contents">
+  <!-- 라인 배너 01 -->
+  <div class="kd-bnline-wrap01 kd-mt-60">
+    <div df-banner-code="bn-line01" hidden>
+      <div df-banner-clone><a href="{#href}">{#item}</a></div>
+    </div>
+  </div>
+  <!-- // 라인 배너 01 -->
+
+  <!-- 메인분류 02 -->
+  <div module="product_listmain_2" class="kd-month-wrap kd-mt-60">
+    <!--
+          $count = 6
+          ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+          ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+          $basket_result = /product/add_basket.html
+          $basket_option = /product/basket_option.html
+      -->
+    <div class="kd-main-title">
+      <h2>{$category_title_text}</h2>
+    </div>
+    <ul class="kd-prd-list kd-grid2 kd-clear">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+  <!-- // 메인분류 02 -->
+</div>
+
+<!-- 메인분류 03 -->
+<div module="product_listmain_3" class="kd-cherish-wrap kd-mt-60">
+  <!--
+      $count = 10
+      ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+      ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+      $basket_result = /product/add_basket.html
+      $basket_option = /product/basket_option.html
+  -->
+  <div class="kd-main-title">
+    <h2>{$category_title_text}</h2>
+    <a href="/product/list.html?cate_no=24" class="kd-btn-more">전체보기<img
+        src="/web/upload/kdesign/btn/btn_title_more.svg" alt="전체보기"></a>
+  </div>
+  <div class="swiper-container">
+    <ul class="kd-prd-list kd-grid2 swiper-wrapper">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+</div>
+<!-- // 메인분류 03 -->
+
+<div class="kd-contents">
+  <!-- 이벤트 -->
+  <div class="kd-event-wrap kd-mt-60">
+    <div class="kd-main-title">
+      <h2>진행 중인 EVENT</h2>
+      <a href="/event/list.html" class="kd-btn-more">전체보기<img src="/web/upload/kdesign/btn/btn_title_more.svg"
+          alt="전체보기"></a>
+    </div>
+    <ul module="board_list_2" class="kd-event-list">
+      <!--
+              $count = 2
+              $login_page_url = /member/login.html
+              $deny_access_url = /index.html
+          -->
+      <!--@import(/_kd/import/event.html)-->
+    </ul>
+  </div>
+  <!-- 이벤트 -->
+
+  <!-- 메인분류 04 -->
+  <div module="product_listmain_4" class="kd-mealkit-wrap kd-mt-60">
+    <!--
+          $count = 10
+          ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+          ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+          $basket_result = /product/add_basket.html
+          $basket_option = /product/basket_option.html
+      -->
+    <div class="kd-main-title">
+      <h2>{$category_title_text}</h2>
+      <a href="/product/list.html?cate_no=28" class="kd-btn-more">전체보기<img
+          src="/web/upload/kdesign/btn/btn_title_more.svg" alt="전체보기"></a>
+    </div>
+    <ul class="kd-prd-list kd-grid2 kd-clear">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+  <!-- // 메인분류 04 -->
+</div>
+
+<!-- 메인분류 05 -->
+<div module="product_listmain_5" class="kd-dessert-wrap kd-mt-60">
+  <!--
+      $count = 10
+      ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+      ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+      $basket_result = /product/add_basket.html
+      $basket_option = /product/basket_option.html
+  -->
+  <div class="kd-main-title">
+    <h2>{$category_title_text}</h2>
+    <a href="/product/list.html?cate_no=30" class="kd-btn-more">전체보기<img
+        src="/web/upload/kdesign/btn/btn_title_more.svg" alt="전체보기"></a>
+  </div>
+  <div class="swiper-container">
+    <ul class="kd-prd-list kd-grid2 swiper-wrapper">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+</div>
+<!-- // 메인분류 05 -->
+
+<div class="kd-contents">
+  <!-- 라인 배너 02 -->
+  <div class="kd-bnline-wrap02 kd-mt-60">
+    <div df-banner-code="bn-line02" hidden>
+      <div df-banner-clone><a href="{#href}">{#item}</a></div>
+    </div>
+  </div>
+  <!-- // 라인 배너 02 -->
+
+  <!-- 메인분류 06 -->
+  <div module="product_listmain_6" class="kd-shopping-wrap kd-mt-60">
+    <!--
+          $count = 6
+          ※ 상품진열갯수를 설정하는 변수입니다. 설정하지 않을 경우, 최대 200개의 상품이 진열 됩니다.
+          ※ 진열된 상품이 많으면, 쇼핑몰에 부하가 발생할 수 있습니다.
+          $basket_result = /product/add_basket.html
+          $basket_option = /product/basket_option.html
+      -->
+    <div class="kd-main-title">
+      <h2>{$category_title_text}</h2>
+    </div>
+    <ul class="kd-prd-list kd-grid2 kd-clear">
+      <!--@import(/_kd/import/prd/list01.html)-->
+    </ul>
+  </div>
+  <!-- // 메인분류 06 -->
+</div>
+
+<!-- 리뷰 -->
+<div class="kd-review-wrap kd-mt-60">
+  <div class="kd-main-title">
+    <h2>고객님들의 리얼후기</h2>
+    <a href="/review/list.html" class="kd-btn-more">전체보기<img src="/web/upload/kdesign/btn/btn_title_more.svg"
+        alt="전체보기"></a>
+  </div>
+  <div class="swiper-container">
+    <ul module="board_list_4" class="kd-review-list swiper-wrapper">
+      <!--
+              $count = 10
+              $login_page_url = /member/login.html
+              $deny_access_url = /index.html
+          -->
+      <!--@import(/_kd/import/review.html)-->
+    </ul>
+  </div>
+</div>
+<!-- // 리뷰 -->
+
+<!-- 인스타그램 -->
+<div class="kd-insta-wrap kd-mt-60">
+  <div class="kd-main-title">
+    <h2>INSTAGRAM</h2>
+    <a class="kd-btn-more" href="https://www.instagram.com/mask.buy/" target="_blank">팔로우 하기<img
+        src="/web/upload/kdesign/btn/btn_title_more.svg" alt="전체보기"></a>
+  </div>
+  <section id="instagramWidgetManual"></section>
+</div>
+<!-- // 인스타그램 -->

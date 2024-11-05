@@ -1,0 +1,255 @@
+<!--@css(/layout/basic/css/slideMenu.css)-->
+<!--@js(/layout/basic/js/slide_menu.js)-->
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+<script src="/web/upload/kdesign/js/slick.js" type="text/javascript" charset="utf-8"></script>
+<style>
+  .slick-slide {
+    opacity: 1 !important;
+    padding: 0 20px;
+  }
+
+  @media screen and (max-width: 420px) {
+    .slick-slide {
+      opacity: 1 !important;
+      padding: 0 3px;
+    }
+  }
+</style>
+<script>
+  var j220 = jQuery.noConflict();
+  j220(document).ready(function () {
+    var $slider = j220('.category_slider');
+    var $progressBar = j220('.progress');
+    var $progressBarLabel = j220('.slider__label');
+    $slider.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+      var calc = ((nextSlide) / (slick.slideCount - 1)) * 100 + 20;
+      $progressBar
+        .css('background-size', calc + '% 100%')
+        .attr('aria-valuenow', calc);
+      $progressBarLabel.text(calc + '% completed');
+    });
+    $slider.slick({
+      arrows: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      prevArrow: true,
+      nextArrow: true,
+      speed: 400
+    });
+    j220(".hamburger-prev-btn").click(function () {
+      j220(".category_slider").slick("slickPrev");
+    });
+    j220(".hamburger-next-btn").click(function () {
+      j220(".category_slider").slick("slickNext");
+    });
+  });
+
+
+  // 사이드바 slider 
+  j220(document).ready(function () {
+
+    j220('.side_slider4').slick({
+      centerMode: true,
+      autoplay: true,			// 자동 스크롤 사용 여부
+      autoplaySpeed: 3000, 		// 자동 스크롤 시 다음으로 넘어가는데 걸리는 시간 (ms)
+      centerPadding: '50px',
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      infinite: true,
+      arrows: false,
+      responsive: [
+        {
+          breakpoint: 50,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '10px',
+            slidesToShow: 1
+          }
+        },
+        {
+          breakpoint: 400,
+          settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '10px',
+            slidesToShow: 1
+          }
+        }
+      ]
+    });
+  });
+</script>
+<aside id="kd-aside" module="layout_slidePackage">
+  <div module="myshop_main">
+    <div class="kd-aside-log kd-contents">
+      <a module="Layout_stateLogoff" href="/member/login.html" class="kd-aside-my">로그인하고 혜택을 받으세요<img
+          src="/web/upload/kdesign/ico/ic_m_quick_arrow.svg" alt="화살표"></a>
+      <a module="Layout_stateLogoff" href="/member/agreement.html" class="kd-aside-func">회원가입</a>
+      <a module="Layout_statelogon" href="/myshop/index.html" class="kd-aside-my">안녕하세요 {$name}님<img
+          src="/web/upload/kdesign/ico/ic_m_quick_arrow.svg" alt="화살표"></a>
+      <a module="Layout_statelogon" href="{$action_logout}" class="kd-aside-func">로그아웃</a>
+    </div>
+  </div>
+  <div style="margin-top: -10px;"></div>
+  <div style="margin-top: -10px;"></div>
+
+  <style>
+    .kd-aside-menu img {
+      width: 32px;
+      /* 원하는 너비로 조절 */
+      height: 30px;
+      /* 원하는 높이로 조절 */
+    }
+
+    .kd-aside-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+    }
+
+    .kd-aside-menu li {
+      margin-right: 150px;
+      /* 여백을 조절할 값으로 조절 */
+    }
+
+    .kd-aside-menu li:last-child {
+      margin-right: 0;
+      /* 마지막 항목에는 오른쪽 여백을 주지 않음 */
+    }
+  </style>
+
+
+
+  <div id="kd-cate-wrap">
+    <div class="kd-contents" style="width: 100%;">
+      <!-- 전체메뉴보기, 메뉴 편집 넣을 때 스타일 수정 -->
+      <div style="width: 90%; margin: 0 auto;">
+
+        <!-- 카테고리 -->
+        <!--@import(/_kd/import/category3.html)-->
+        <!-- // 카테고리 -->
+      </div>
+      <!-- 멤버쉽 배너 -->
+      <!--@import(/_kd/import/hamburger_membership_bn.html)-->
+      <!-- 멤버쉽 배너 -->
+
+      <div style="width: 90%; margin: 0 auto;">
+        <div id="slideProjectList" module="layout_project">
+          <h2 class="selected"><img src="/web/upload/kdesign/ico/ic_side_cate.svg" alt="전체카테고리">기획전</h2>
+          <ul class="categoryList kd-flex">
+            <li id="cate{$cate_no}">
+              <a href="#none" class="cate" cate="{$param}">{$category_text|cut 25}</a>
+            </li>
+            <li id="cate{$cate_no}">
+              <a href="#none" class="cate" cate="{$param}">{$category_text|cut 25}</a>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top: 10px;"></div>
+
+
+        <div class="side_banner kd-mb-30">
+          <a href="#" onclick="redirectToAppStore();" style="margin-bottom: 20px;"><img
+              src="/web/upload/kdesign/banner/sideb01.png"></a>
+        </div>
+        <div class="side_banner kd-mb-30">
+          <a href="https://almondyoung.com/product/list.html?cate_no=345" style="margin-bottom: 20px;"><img
+              src="/web/upload/kdesign/banner/sideb02.png"></a>
+        </div>
+        <div class="side_banner kd-mb-30">
+          <a href="https://almondyoung.com/product/list.html?cate_no=495" style="margin-bottom: 20px;"><img
+              src="/web/upload/kdesign/banner/sideb03.png"></a>
+        </div>
+
+
+
+
+        <!-- 사이드배너01 앱다운로드 -->
+        <h2 style="margin-top: 20px;"><img src="/web/upload/kdesign/ico/ic_side_cate.svg" alt="테마관">테마관</h2>
+        <div class="side_slider4" style="overflow-x: hidden;">
+          <div class="slide"><a href="링크1"><img src="/web/upload/kdesign/banner/secret01.png"></a></div>
+          <div class="slide"><a href="링크2"><img src="/web/upload/kdesign/banner/secret01.png"></a></div>
+          <div class="slide"><a href="링크3"><img src="/web/upload/kdesign/banner/secret01.png"></a></div>
+        </div>
+      </div>
+
+      <!-- Your HTML content goes here -->
+
+      <div class="bookmarkCategory" id="bookmarkCategory">
+        <h2 class="selected">즐겨찾기<button type="button" class="icoCategory">펼침</button></h2>
+        <p class="bookmarkEmpty" id="bookmarkEmpty">자주쓰는 카테고리 우측에 <img
+            src="//img.echosting.cafe24.com/skin/mobile_ko_KR/layout/ico_bookmark_star.png" alt="즐겨찾기"> 을 눌러주세요.<br>쉽게
+          카테고리를 이용할 수 있습니다.</p>
+        <div id="bookmartCateArea" class="bookmarkCategory"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px;"></div>
+
+    <script>
+      function redirectToAppStore() {
+        var isAndroid = /Android/i.test(navigator.userAgent);
+        var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isAndroid) {
+          window.location.href = "https://play.google.com/store/apps/details?id=com.pauseb.projectc"; // Android 앱 스토어 링크
+        } else if (isIOS) {
+          window.location.href = "https://apps.apple.com/kr/app/%EB%8B%A4%EB%B7%B0/id6452912806?platform=iphone"; // iOS 앱 스토어 링크
+        } else {
+          // 다른 플랫폼이라면 기본 동작 설정 (예: 웹 페이지로 이동)
+          window.location.href = "#";
+        }
+      }
+    </script>
+
+
+
+    <div style="margin-top: 30px;"></div>
+
+    <!-- 멀티샵 -->
+    <!--div class="kd-multishop kd-contents" module="Layout_multishopList" id="slideMultishopList">
+            <h2 class="kd-multishop-title"><img src="/web/upload/kdesign/ico/ic_language.svg" alt="언어">{$translate_language}</h2>
+            <ul module="multishop_listitem" class="kd-flex">
+                <li class="{$selected_class}">
+                    <a href="//{$shop_domain}/">
+                        <span class="name">{$locale_language}</span>
+                    </a>
+                </li>
+                <li class="{$selected_class}">
+                    <a href="//{$shop_domain}/">
+                        <span class="name">{$locale_language}</span>
+                    </a>
+                </li>
+            </ul>
+        </div-->
+    <!-- // 멀티샵 -->
+  </div>
+
+  <!-- 전화걸기, 카카오톡 채널추가 -->
+  <div module="Layout_footer" class="kd-aside-cs kd-contents">
+    <h2>고객센터 <span>{$phone}</span></h2>
+    <p>{$runtime}</p>
+    <ul class="kd-clear" style="text-align: center;">
+      <li class="kd-fleft" style="display: inline-block; margin: 0 5px 10px;">
+        <a href="tel:{$phone}" target="_blank"><img src="/web/upload/kdesign/btn/btn_side_call.svg" alt="전화걸기"></a>
+      </li>
+      <li class="kd-fleft" style="display: inline-block; margin: 0 5px 10px;">
+        <a href="http://pf.kakao.com/_xaxgxazs" target="_blank"><img src="/web/upload/kdesign/btn/btn_side_kakao.svg"
+            alt="카카오챗 채널추가"></a>
+      </li>
+      <li class="kd-fleft" style="display: inline-block; margin: 0 5px 10px;">
+        <a href="https://www.instagram.com/almondyoung_official/" target="_blank"><img
+            src="/web/upload/kdesign/btn/btn_insta2.png" alt="인스타그램"></a>
+      </li>
+    </ul>
+  </div>
+  <!-- // 전화걸기, 카카오톡 채널추가 -->
+
+  <div style="margin-top: 30px;"></div>
+
+  <!-- 카테고리 닫기 버튼 -->
+  <a href="#none" class="kd-aside-close"><img src="/web/upload/kdesign/btn/btn_quick_close.svg" alt="닫기"></a>
+</aside>
