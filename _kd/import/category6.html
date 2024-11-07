@@ -3,8 +3,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 </head>
 
-<div style="width: 90%; margin: 0 auto;">
-  <div style="display: flex;align-items: center;gap: 12px;justify-content: space-between;">
+<div style="width: 100%; margin: 0 auto;">
+  <div style="width: 90%; margin: 0 auto; display: flex;align-items: center;gap: 12px;justify-content: space-between;">
     <span>
       <a href="https://almondyoung.com/product/list.html?cate_no=499"
         style="display: flex; align-items: center; color: #333; text-decoration: none; font-size: 14px;">
@@ -27,24 +27,6 @@
   <div class="slided-category">
     <div class="hamburger_category_slider"></div>
     <div class="slider-dots" style="text-align: center; margin-bottom: 10px"></div>
-  </div>
-
-  <div id="menuEditorContainer" class="menu-editor-container" style="display: none;">
-    <h2>메뉴 편집</h2>
-    <div class="favorite-menu-container">
-      <h3>즐겨찾기 메뉴</h3>
-      <div id="favoritedMenuList" class="menu-list favorite-list"
-        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;"></div>
-    </div>
-    <div class="all-menu-container">
-      <h3>전체 메뉴</h3>
-      <div id="allMenuList" class="menu-list" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-      </div>
-    </div>
-    <div class="button-group" style="margin-top: 20px; text-align: center;">
-      <button class="cancel-button" onclick="menuEditor.close()">취소</button>
-      <button class="save-button" onclick="menuEditor.save()">저장</button>
-    </div>
   </div>
 </div>
 
@@ -180,8 +162,8 @@
   .full-menu-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    padding: 20px;
+    padding: 1px;
+    padding-top: 20px;
     background-color: white;
   }
 
@@ -191,6 +173,7 @@
     align-items: center;
     text-decoration: none;
     gap: 8px;
+    margin-bottom: 20px;
   }
 
   .full-menu-container img {
@@ -273,7 +256,8 @@
     supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxaWJ0dHd1bGNyaGx1bnZqa3doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA2OTg5NjYsImV4cCI6MjA0NjI3NDk2Nn0.K9qaBcngXif4b6wPy7feHRZrBLmFaiB-DDl0g4vkzqc",
     defaultMenuCount: 8,
     slideItemCount: 4,
-    pageItemCount: 8
+    pageItemCount: 8,
+    maxFavoriteCount: 29
   };
 
   const defaultMenus = {
@@ -282,10 +266,10 @@
       { menu: { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" } },
       { menu: { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" } },
       { menu: { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" } },
-      { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
-      { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
-      { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } },
-      { menu: { name: "", redirect_url: "#", image_src: "공백메뉴이미지" } }
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } }
     ],
     guestDefault: [
       { menu: { name: "카카오채널", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H01.png" } },
@@ -369,8 +353,9 @@
 
   const supabaseClient = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
 
-  sessionStorage.setItem('memberId', 'joongsick'); // 로그인했지만 custom_sequence 없는 경우
-  sessionStorage.setItem('memberId', 'hyunbin'); // 로그인했고 custom_sequence 있는 경우
+  // sessionStorage.setItem('memberId', 'joongsick'); // 로그인했지만 custom_sequence 없는 경우
+  // sessionStorage.setItem('memberId', 'yeonjeong'); // 로그인했지만 custom_sequence 없는 경우
+  // sessionStorage.setItem('memberId', 'hyunbin'); // 로그인했고 custom_sequence 있는 경우
   // sessionStorage.clear(); // 로그인하지 않은 경우
 
   const memberId = sessionStorage.getItem('memberId');
@@ -604,159 +589,454 @@
   const menuEditor = {
     async init() {
       try {
-        const customSequence = await utils.fetchCustomMenu(memberId);
-        const favoritedMenuList = document.getElementById('favoritedMenuList');
-        const allMenuList = document.getElementById('allMenuList');
-        favoritedMenuList.innerHTML = '';
-        allMenuList.innerHTML = '';
-        document.querySelector('.slided-category').style.display = 'none'
-        document.getElementById('editCustomMenu').style.display = 'none';
-        document.getElementById('betweenEditAll').style.display = 'none';
-        document.getElementById('viewAllButton').style.display = 'none';
+        // 상단 버튼들 숨기기
+        const editCustomMenu = document.getElementById('editCustomMenu');
+        const betweenEditAll = document.getElementById('betweenEditAll');
+        const viewAllButton = document.getElementById('viewAllButton');
 
+        if (editCustomMenu) editCustomMenu.style.display = 'none';
+        if (betweenEditAll) betweenEditAll.style.display = 'none';
+        if (viewAllButton) viewAllButton.style.display = 'none';
+
+        // 전체 메뉴 보기가 활성화되어 있다면 상태 초기화
+        if (state.isViewAll) {
+          state.isViewAll = false;
+          const fullMenuContainer = document.querySelector('.full-menu-container');
+          const viewAllButton = document.getElementById('viewAllButton');
+          if (fullMenuContainer) {
+            fullMenuContainer.style.display = 'none';
+            if(viewAllButton.textContent == '닫기'){
+              viewAllButton.textContent = '전체 메뉴보기';
+            }
+          }
+        }
+        // custom_sequence 데이터 가져오기
+        const { data: customSequence, error } = await supabaseClient
+          .from('custom_menu_sequence')
+          .select('menu, sequence')
+          .eq('member', memberId)
+          .order('sequence');
+
+        if (error) throw error;
+
+        // 편집 모드 컨테이너 생성
+        const editorContainer = document.createElement('div');
+        editorContainer.className = 'editor-container';
+        editorContainer.innerHTML = `
+        <div style="width: 90%; margin: 0 auto;">
+          <div class="editor-header">
+            <h3>메뉴 편집</h3>
+            <div class="editor-actions">
+              <button class="cancel-button" onclick="menuEditor.close()">취소</button>
+              <button class="save-button" onclick="menuEditor.save()">저장</button>
+            </div>
+          </div>
+          <div class="favorite-section">
+            <h4>즐겨찾기 메뉴</h4>
+            <div class="favorite-menu-container"></div>
+          </div>
+          <div class="available-section">
+            <h4>전체 메뉴</h4>
+            <div class="available-menu-container"></div>
+          </div>
+        <div>
+      `;
+
+        // 슬라이더 컨테이너를 숨기고 에디터 컨테이너 추가
+        const slidedCategory = document.querySelector('.slided-category');
+        const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+        const sliderDots = document.querySelector('.slider-dots');
+
+        hamburgerSlider.style.display = 'none';
+        sliderDots.style.display = 'none';
+        slidedCategory.appendChild(editorContainer);
+
+        const favoriteContainer = editorContainer.querySelector('.favorite-menu-container');
+        const availableContainer = editorContainer.querySelector('.available-menu-container');
+
+        // custom_sequence에 있는 메뉴 ID 집합 생성
+        const favoriteMenuIds = new Set(customSequence ? customSequence.map(item => item.menu) : []);
+
+        // 모든 메뉴를 순회하면서 적절한 컨테이너에 배치
         FULL_MENU_LIST.forEach((menuItem, index) => {
-          const isFavorited = customSequence.some(seq => seq.menu.name === menuItem.name);
-          const menuElement = domManipulation.createMenuItem(menuItem, isFavorited);
-          if (isFavorited) {
-            favoritedMenuList.appendChild(menuElement);
+          const isFavorite = favoriteMenuIds.has(index + 1); // menu ID는 1부터 시작
+          const menuElement = this.createMenuItem(menuItem, isFavorite, index + 1);
+
+          if (isFavorite) {
+            // custom_sequence의 순서대로 정렬하기 위한 데이터 추가
+            const sequenceData = customSequence.find(item => item.menu === index + 1);
+            menuElement.setAttribute('data-sequence', sequenceData.sequence);
+            favoriteContainer.appendChild(menuElement);
           } else {
-            allMenuList.appendChild(menuElement);
+            availableContainer.appendChild(menuElement);
           }
         });
 
-        document.getElementById('menuEditorContainer').style.display = 'block';
-        this.addDragDropListeners();
+        // 즐겨찾기 메뉴 정렬
+        const favoriteMenus = Array.from(favoriteContainer.children);
+        favoriteMenus.sort((a, b) => {
+          return parseInt(a.getAttribute('data-sequence')) - parseInt(b.getAttribute('data-sequence'));
+        });
+        favoriteMenus.forEach(menu => favoriteContainer.appendChild(menu));
+
+        // Sortable.js를 사용하여 드래그 앤 드롭 기능 추가
+        new Sortable(favoriteContainer, {
+          animation: 150,
+          ghostClass: 'menu-item-ghost',
+          chosenClass: 'menu-item-chosen',
+          dragClass: 'menu-item-drag',
+          group: {
+            name: 'shared',
+            pull: false,
+            put: false
+          }
+        });
+
+        // 스타일 추가
+        this.addStyles();
+
       } catch (error) {
         console.error('메뉴 에디터 초기화 중 오류:', error);
         alert('메뉴 편집기를 불러오는 중 오류가 발생했습니다.');
       }
     },
 
-    addDragDropListeners() {
-      const favoritedMenuList = document.getElementById('favoritedMenuList');
-      new Sortable(favoritedMenuList, {
-        animation: 150,
-        onEnd: () => {
-          domManipulation.updateSequenceNumbers();
-        }
-      });
+    createMenuItem(menuItem, isFavorite, menuId) {
+      const div = document.createElement('div');
+      div.className = `menu-item ${isFavorite ? 'favorited' : ''}`;
+      div.setAttribute('data-menu-id', menuId);
+      div.setAttribute('data-menu-name', menuItem.name);
 
-      document.querySelectorAll('.menu-item .favorite-star').forEach(starElement => {
-        starElement.addEventListener('click', () => {
-          this.toggleFavorite(starElement);
-        });
-      });
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'menu-image-container';
+
+      const img = document.createElement('img');
+      img.src = menuItem.image_src;
+      img.alt = menuItem.name;
+      img.loading = 'lazy';
+
+      const toggleIcon = document.createElement('button');
+      toggleIcon.className = 'toggle-icon';
+      toggleIcon.textContent = isFavorite ? '−' : '+';
+      toggleIcon.onclick = (e) => {
+        e.stopPropagation();
+        this.toggleFavorite(div);
+      };
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'menu-name';
+      nameSpan.textContent = menuItem.name;
+
+      imgContainer.appendChild(img);
+      imgContainer.appendChild(toggleIcon);
+      div.appendChild(imgContainer);
+      div.appendChild(nameSpan);
+
+      return div;
     },
 
-    toggleFavorite(starElement) {
-      const menuItem = starElement.closest('.menu-item');
-      const isFavorited = starElement.classList.contains('active');
+    toggleFavorite(menuItem) {
+      const isFavorite = menuItem.classList.contains('favorited');
+      const favoriteContainer = document.querySelector('.favorite-menu-container');
+      const availableContainer = document.querySelector('.available-menu-container');
+      const toggleIcon = menuItem.querySelector('.toggle-icon');
 
-      if (isFavorited) {
-        starElement.classList.remove('active');
-        document.getElementById('allMenuList').appendChild(menuItem);
+      if (isFavorite) {
+        menuItem.classList.remove('favorited');
+        toggleIcon.textContent = '+';
+        availableContainer.appendChild(menuItem);
       } else {
-        starElement.classList.add('active');
-        document.getElementById('favoritedMenuList').appendChild(menuItem);
+        const currentFavorites = favoriteContainer.children.length;
+        if (currentFavorites >= CONFIG.maxFavoriteCount) {
+          alert(`즐겨찾기는 최대 ${CONFIG.maxFavoriteCount}개까지 등록할 수 있습니다.`);
+          return;
+        }
+        menuItem.classList.add('favorited');
+        toggleIcon.textContent = '−';
+        favoriteContainer.appendChild(menuItem);
       }
-      domManipulation.updateSequenceNumbers();
     },
 
     async save() {
       try {
-        const favoritedMenus = Array.from(document.querySelectorAll('#favoritedMenuList .menu-item'))
-          .map((element, index) => {
-            const menuIndex = FULL_MENU_LIST.findIndex(item => item.name === element.dataset.menuName);
-            return {
-              member: memberId,
-              menu: menuIndex + 1,
-              sequence: index + 1
-            };
-          });
+        // 멤버 존재 여부 확인 및 추가
+        const { data: existingMember, error: memberCheckError } = await supabaseClient
+          .from('members')
+          .select('cafe24_id')
+          .eq('cafe24_id', memberId)
+          .single();
 
-        await supabaseClient.from('custom_menu_sequence').delete().eq('member', memberId);
-        if (favoritedMenus.length > 0) {
-          await supabaseClient.from('custom_menu_sequence').insert(favoritedMenus);
+        if (memberCheckError && memberCheckError.code === 'PGRST116') {
+          // 멤버가 존재하지 않는 경우, 새로 추가
+          const { error: insertMemberError } = await supabaseClient
+            .from('members')
+            .insert([{ cafe24_id: memberId }]);
+
+          if (insertMemberError) {
+            throw insertMemberError;
+          }
+          console.log('New member added:', memberId);
+        } else if (memberCheckError) {
+          throw memberCheckError;
         }
 
-        await menuRenderer.renderCustomMenu(await utils.fetchCustomMenu(memberId));
-        this.close();
+        const favoriteContainer = document.querySelector('.favorite-menu-container');
+        const favoritedMenus = [];
+
+        // 즐겨찾기 영역의 모든 메뉴 아이템을 순회하면서 데이터 수집
+        Array.from(favoriteContainer.children).forEach((element, index) => {
+          // data-menu-id 속성에서 메뉴 ID 가져오기
+          const menuId = parseInt(element.getAttribute('data-menu-id'));
+          if (!isNaN(menuId)) {
+            favoritedMenus.push({
+              member: memberId,
+              menu: menuId,
+              sequence: index + 1 // 현재 위치를 기반으로 순서 부여
+            });
+          }
+        });
+
+        console.log('Saving menu sequence:', favoritedMenus);
+
+        // 기존 custom_menu_sequence 데이터 삭제
+        const { error: deleteError } = await supabaseClient
+          .from('custom_menu_sequence')
+          .delete()
+          .eq('member', memberId);
+
+        if (deleteError) {
+          throw deleteError;
+        }
+
+        // 새로운 sequence 데이터 저장
+        if (favoritedMenus.length > 0) {
+          const { error: insertError } = await supabaseClient
+            .from('custom_menu_sequence')
+            .insert(favoritedMenus);
+
+          if (insertError) {
+            throw insertError;
+          }
+
+          console.log('Successfully saved menu sequence');
+
+          // 저장 후 메인 화면 새로 렌더링
+          const customSequenceMenu = await utils.fetchCustomMenu(memberId);
+          await menuRenderer.renderCustomMenu(customSequenceMenu);
+
+          // 에디터 닫기
+          this.close();
+
+          // 성공 메시지 표시
+          alert('메뉴 설정이 저장되었습니다.');
+        } else {
+          // 즐겨찾기가 없는 경우
+          await menuRenderer.renderCustomMenu(utils.getDefaultMenu(true));
+          this.close();
+          alert('기본 메뉴로 설정되었습니다.');
+        }
       } catch (error) {
         console.error('메뉴 저장 중 오류:', error);
-        alert('저장 중 오류가 발생했습니다.');
+        alert('메뉴 저장 중 오류가 발생했습니다.');
       }
     },
 
     close() {
-      document.getElementById('menuEditorContainer').style.display = 'none';
-      document.querySelector('.slided-category').style.display = ''
-      document.getElementById('editCustomMenu').style.display = '';
-      document.getElementById('betweenEditAll').style.display = '';
-      document.getElementById('viewAllButton').style.display = '';
-    },
-
-
-    handleDragStart(e) {
-      const item = e.target.closest('.menu-item');
-      if (!item?.classList.contains('favorited')) {
-        e.preventDefault();
-        return;
+      const editorContainer = document.querySelector('.editor-container');
+      if (editorContainer) {
+        editorContainer.remove();
       }
-      state.dragSourceElement = item;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', item.outerHTML);
-      item.classList.add('dragging');
+
+      // 상단 버튼들 다시 보이기
+      const editCustomMenu = document.getElementById('editCustomMenu');
+      const betweenEditAll = document.getElementById('betweenEditAll');
+      const viewAllButton = document.getElementById('viewAllButton');
+
+      if (editCustomMenu) editCustomMenu.style.display = 'block';
+      if (betweenEditAll) betweenEditAll.style.display = 'block';
+      if (viewAllButton) viewAllButton.style.display = 'block';
+
+
+      const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+      const sliderDots = document.querySelector('.slider-dots');
+
+      hamburgerSlider.style.display = 'block';
+      sliderDots.style.display = 'flex';
     },
 
-    handleDragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      return false;
-    },
-
-    handleDragEnter(e) {
-      const item = e.target.closest('.menu-item');
-      if (item?.classList.contains('favorited')) {
-        item.classList.add('over');
-      }
-    },
-
-    handleDragLeave(e) {
-      const item = e.target.closest('.menu-item');
-      if (item) {
-        item.classList.remove('over');
-      }
-    },
-
-    handleDrop(e) {
-      e.stopPropagation();
-      const dropTarget = e.target.closest('.menu-item');
-
-      if (state.dragSourceElement !== dropTarget &&
-        dropTarget?.classList.contains('favorited')) {
-        const allItems = Array.from(document.querySelectorAll('.menu-item.favorited'));
-        const fromIndex = allItems.indexOf(state.dragSourceElement);
-        const toIndex = allItems.indexOf(dropTarget);
-
-        if (fromIndex < toIndex) {
-          dropTarget.parentNode.insertBefore(state.dragSourceElement, dropTarget.nextSibling);
-        } else {
-          dropTarget.parentNode.insertBefore(state.dragSourceElement, dropTarget);
+    addStyles() {
+      const style = document.createElement('style');
+      style.textContent = `
+        .editor-container {
+          background: white;
+          padding: 5px;
+        }
+        
+        .editor-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          padding-bottom: 2.5px;
+          border-bottom: 1px solid #eee;
+        }
+        
+        .editor-header h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+        }
+        
+        .editor-actions {
+          display: flex;
+          gap: 2px;
+        }
+        
+        .favorite-section, .available-section {
+          margin-bottom: 24px;
+        }
+        
+        .favorite-section h4, .available-section h4 {
+          margin-bottom: 12px;
+          font-size: 16px;
+          font-weight: 500;
+          color: #666;
+        }
+        
+        .favorite-menu-container, .available-menu-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+          gap: 10px;
+          padding: 15px;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          background: #f9f9f9;
+          min-height: 100px;
+        }
+        
+        .menu-item {
+          position: relative;
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+          padding: 2px 1px 1px;
+          background: white;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          cursor: move;
+          width: fit-content;
+          margin: 0 auto;
+        }
+        
+        .menu-item:hover {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-image-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 4px;
+        }
+        
+        .menu-item img {
+          width: 40px;
+          height: 40px;
+          object-fit: contain;
+        }
+        
+        .menu-name {
+          font-size: 11px;
+          text-align: center;
+          color: #333;
+          word-break: keep-all;
+          line-height: 1.2;
+          margin-top: 4px;
+          width: 100%;
+          padding: 0 2px;
+        }
+        
+        .toggle-icon {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          width: 16px;
+          height: 16px;
+          background: #f0f0f0;
+          border: 1px solid #ddd;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          color: #666;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          z-index: 1;
+          padding: 0;
+        }
+        
+        .toggle-icon:hover {
+          background: #e0e0e0;
+          transform: scale(1.1);
+        }
+        
+        .menu-item-ghost {
+          opacity: 0.5;
+        }
+        
+        .menu-item-chosen {
+          background-color: #f8f8f8;
+        }
+        
+        .menu-item-drag {
+          opacity: 0.8;
+        }
+        
+        .editor-actions button {
+          padding: 2px 4px;
+          border: none;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .save-button {
+          background-color: #F7AF00;
+          color: white;
+          font-weight: 500;
+        }
+        
+        .save-button:hover {
+          background-color: #e59e00;
+        }
+        
+        .cancel-button {
+          background-color: #f0f0f0;
+          color: #333;
+          font-weight: 500;
+        }
+        
+        .cancel-button:hover {
+          background-color: #e0e0e0;
         }
 
-        domManipulation.updateSequenceNumbers();
-      }
-      return false;
-    },
-
-    handleDragEnd(e) {
-      const item = e.target.closest('.menu-item');
-      if (item) {
-        item.classList.remove('dragging');
-      }
-      document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('over');
-      });
+        @media (max-width: 768px) {
+          .favorite-menu-container, .available-menu-container {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          
+          .menu-item {
+            width: 100%;
+          }
+        }
+      `;
+      document.head.appendChild(style);
     }
   };
 
@@ -779,6 +1059,7 @@
         pageContainer.classList.add('image');
         let lineContainer = document.createElement('div');
         lineContainer.classList.add('line');
+        lineContainer.style.padding = "10px 0px"
         let itemCount = 0;
         let pageCount = 0;
         let isFirstPage = true;
@@ -821,6 +1102,7 @@
             pageContainer.appendChild(lineContainer);
             lineContainer = document.createElement('div');
             lineContainer.classList.add('line');
+            lineContainer.style.padding = "10px 0px"
           }
 
           if (itemCount % CONFIG.pageItemCount === 0 || index === menuSequence.length - 1) {
@@ -886,6 +1168,14 @@
     }
   };
 
+  async function openEditor(memberId) {
+    if (!memberId) {
+      alert('로그인이 필요한 기능입니다.');
+      return;
+    }
+    await menuEditor.init();
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
     try {
       if (memberId) {
@@ -899,11 +1189,7 @@
       }
 
       document.getElementById('editCustomMenu')?.addEventListener('click', async () => {
-        if (!memberId) {
-          alert('로그인이 필요한 기능입니다.');
-          return;
-        }
-        await menuEditor.init();
+        openEditor(memberId)
       });
 
       document.getElementById('viewAllButton')?.addEventListener('click', () => {

@@ -1,8 +1,11 @@
 <div df-banner-code="bn-top" class="hamburger-bn-top">
-  <a href="/new_contents.html" class="hamburger-banner-content">
+  <!-- <a href="/new_contents.html" class="hamburger-banner-content">
     지금, 멤버십에 가입하고 다양한 혜택을 받아보세요.
   </a>
-  <span class="arrow">›</span>
+  <span class="arrow">›</span> -->
+  <a href="/new_contents.html" class="hamburger-banner-content">
+    <img src="/web/main_cate_icons/addCrownImage.png">
+  </a>
 </div>
 
 <style>
@@ -28,6 +31,13 @@
     text-decoration: none;
   }
 
+  .hamburger-banner-content img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+
   .arrow {
     margin-left: 5px;
     font-size: 30px;
@@ -44,6 +54,12 @@
 
     .arrow {
       font-size: 18px;
+    }
+
+    .hamburger-banner-content img {
+      max-width: 93%;
+      /* 필요에 따라 조정 */
+      height: auto;
     }
   }
 </style>
