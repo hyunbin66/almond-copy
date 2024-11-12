@@ -1,0 +1,1339 @@
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+</head>
+
+<div style="width: 100%; margin: 0 auto;">
+  <div style="width: 90%; margin: 0 auto; display: flex;align-items: center;gap: 12px;justify-content: space-between;">
+    <span>
+      <a href="https://almondyoung.com/product/list.html?cate_no=499"
+        style="display: flex; align-items: center; color: #333; text-decoration: none; font-size: 14px;">
+        <img src="/web/main_cate_icons/pin_icon.png" alt="압정아이콘"
+          style="width: 16px; height: 16px; margin-right: 4px;" />
+        전체 상품 보기 &gt;
+      </a>
+    </span>
+    <div style="display: flex;">
+      <span id="editCustomMenu" class="view-all-text"
+        style="font-size: 14px; color: #999; cursor: pointer;margin: 0px;">
+        편집하기</span>
+      <span id="betweenEditAll" style="font-size: 14px; color: #999;margin: 0px;">&nbsp;|&nbsp;</span>
+      <span id="viewAllButton" class="view-all-text"
+        style="font-size: 14px; color: #999; cursor: pointer;margin: 0px;">전체
+        메뉴보기</span>
+    </div>
+  </div>
+
+  <div class="slided-category">
+    <div class="hamburger_category_slider"></div>
+    <div class="slider-dots" style="text-align: center; margin-bottom: 10px"></div>
+  </div>
+</div>
+
+<style>
+  .hamburger_category_slider {
+    user-select: none;
+    cursor: grab;
+    touch-action: pan-y;
+    -webkit-user-drag: none;
+  }
+
+  .hamburger_category_slider:active {
+    cursor: grabbing;
+  }
+
+  .hamburger_category_slider>div {
+    display: none;
+  }
+
+  .hamburger_category_slider>div.active {
+    display: block;
+  }
+
+  .slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .dot.active {
+    background-color: #F7AF00;
+  }
+
+  .menu-editor-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .menu-editor-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    cursor: move;
+  }
+
+  .menu-item.favorited {
+    background-color: #f8f8f8;
+  }
+
+  .menu-item img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menu-item .favorite-star {
+    margin: 0px auto;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 24px;
+  }
+
+  .menu-item .favorite-star.active {
+    color: #F7AF00;
+  }
+
+  .menu-item .sequence {
+    margin: 0px auto;
+    color: #666;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .button-group button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .save-button {
+    background-color: #F7AF00;
+    color: white;
+  }
+
+  .cancel-button {
+    background-color: #eee;
+    color: #333;
+  }
+
+  .full-menu-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1px;
+    padding-top: 20px;
+    background-color: white;
+  }
+
+  .full-menu-container a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .full-menu-container img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  .full-menu-container span {
+    font-size: 12px;
+    color: #333;
+    text-align: center;
+  }
+
+  .menu-item.over {
+    border: 2px dashed #F7AF00;
+  }
+
+  .menu-item.dragging {
+    opacity: 0.5;
+  }
+</style>
+
+<style>
+  .menu-list .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    position: relative;
+  }
+
+  .menu-item img {
+    width: 50px;
+    height: 50px;
+    margin: auto 0px;
+  }
+
+  .menu-item .favorite-star {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #ddd;
+  }
+
+  .menu-item .favorite-star.active {
+    color: #F7AF00;
+  }
+
+  .menu-item .menu-title {
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+  }
+
+  .button-group button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+
+  .save-button {
+    background-color: #F7AF00;
+    color: white;
+  }
+
+  .cancel-button {
+    background-color: #eee;
+    color: #333;
+  }
+</style>
+
+<script>
+  const CONFIG = {
+    supabaseUrl: "https://lqibttwulcrhlunvjkwh.supabase.co",
+    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxaWJ0dHd1bGNyaGx1bnZqa3doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA2OTg5NjYsImV4cCI6MjA0NjI3NDk2Nn0.K9qaBcngXif4b6wPy7feHRZrBLmFaiB-DDl0g4vkzqc",
+    defaultMenuCount: 8,
+    slideItemCount: 4,
+    pageItemCount: 8,
+    maxFavoriteCount: 29
+  };
+
+  const defaultMenus = {
+    memberDefault: [
+      { menu: { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" } },
+      { menu: { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" } },
+      { menu: { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" } },
+      { menu: { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } },
+      { menu: { name: "", redirect_url: "javascript:openEditor(memberId)", image_src: "/web/main_cate_icons/can_add.png" } }
+    ],
+    guestDefault: [
+      { menu: { name: "카카오채널", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H01.png" } },
+      { menu: { name: "다뷰", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H02.png" } },
+      { menu: { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" } },
+      { menu: { name: "캔바디자인", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H04.png" } },
+      { menu: { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" } },
+      { menu: { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" } },
+      { menu: { name: "퍼마블렌드", redirect_url: "/perma/perma.html", image_src: "/web/main_cate_icons/H07.png" } },
+      { menu: { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" } },
+
+      { menu: { name: "렌탈", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=349", image_src: "/web/main_cate_icons/H09.png" } },
+      { menu: { name: "클래스", redirect_url: "https://almondyoung.com/product/list.html?cate_no=86", image_src: "/web/main_cate_icons/H10.png" } },
+      { menu: { name: "샵매매", redirect_url: "https://almondyoung.com/front/php/b/board_list.php?board_no=13", image_src: "/web/main_cate_icons/H11.png" } },
+      { menu: { name: "아몬드뉴스", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H12.png" } },
+      { menu: { name: "저작권 제보", redirect_url: "https://almondyoung.com/event/copyright.html", image_src: "/web/main_cate_icons/H13.png" } },
+      { menu: { name: "최저가신고", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H14.png" } },
+      { menu: { name: "이벤트", redirect_url: "https://pf.kakao.com/_xaxgxazs", image_src: "/web/main_cate_icons/H15.png" } },
+      { menu: { name: "찾아주세요", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H16.png" } },
+
+      { menu: { name: "아몬드티비", redirect_url: "https://almondyoung.com/shop1/front/php/b/board_list.php?board_no=8&is_pcver=T", image_src: "/web/main_cate_icons/H17.png" } },
+      { menu: { name: "속눈썹펌", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=246", image_src: "/web/main_cate_icons/H18.png" } },
+      { menu: { name: "속눈썹연장", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=247", image_src: "/web/main_cate_icons/H19.png" } },
+      { menu: { name: "반영구", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=261", image_src: "/web/main_cate_icons/H20.png" } },
+      { menu: { name: "왁싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=267", image_src: "/web/main_cate_icons/H21.png" } },
+      { menu: { name: "타투", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=271", image_src: "/web/main_cate_icons/H22.png" } },
+      { menu: { name: "네일아트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=28", image_src: "/web/main_cate_icons/H23.png" } },
+      { menu: { name: "피부미용", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=278", image_src: "/web/main_cate_icons/H24.png" } },
+
+      { menu: { name: "헤어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=347", image_src: "/web/main_cate_icons/H25.png" } },
+      { menu: { name: "메이크업", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=43", image_src: "/web/main_cate_icons/H26.png" } },
+      { menu: { name: "피어싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=348", image_src: "/web/main_cate_icons/H27.png" } },
+      { menu: { name: "미용기기", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=290", image_src: "/web/main_cate_icons/H28.png" } },
+      { menu: { name: "인테리어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=44", image_src: "/web/main_cate_icons/H29.png" } }
+    ]
+  };
+
+  const FULL_MENU_LIST = [
+    { name: "카카오채널", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H01.png" },
+    { name: "다뷰", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H02.png" },
+    { name: "노몬드", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=495", image_src: "/web/main_cate_icons/H03.png" },
+    { name: "캔바디자인", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H04.png" },
+    { name: "신상", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=81", image_src: "/web/main_cate_icons/H05.png" },
+    { name: "베스트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=82", image_src: "/web/main_cate_icons/H06.png" },
+    { name: "퍼마블렌드", redirect_url: "/perma/perma.html", image_src: "/web/main_cate_icons/H07.png" },
+    { name: "미용필기시험", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H08.png" },
+    { name: "렌탈", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=349", image_src: "/web/main_cate_icons/H09.png" },
+    { name: "클래스", redirect_url: "https://almondyoung.com/product/list.html?cate_no=86", image_src: "/web/main_cate_icons/H10.png" },
+    { name: "샵매매", redirect_url: "https://almondyoung.com/front/php/b/board_list.php?board_no=13", image_src: "/web/main_cate_icons/H11.png" },
+    { name: "아몬드뉴스", redirect_url: "https://www.xn--ok0b94xilff7df2wpza.com/", image_src: "/web/main_cate_icons/H12.png" },
+    { name: "저작권 제보", redirect_url: "https://almondyoung.com/event/copyright.html", image_src: "/web/main_cate_icons/H13.png" },
+    { name: "최저가신고", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H14.png" },
+    { name: "이벤트", redirect_url: "https://pf.kakao.com/_xaxgxazs", image_src: "/web/main_cate_icons/H15.png" },
+    { name: "찾아주세요", redirect_url: "https://almondyoung.com/event/searchplz.html", image_src: "/web/main_cate_icons/H16.png" },
+    { name: "아몬드티비", redirect_url: "https://almondyoung.com/shop1/front/php/b/board_list.php?board_no=8&is_pcver=T", image_src: "/web/main_cate_icons/H17.png" },
+    { name: "속눈썹펌", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=246", image_src: "/web/main_cate_icons/H18.png" },
+    { name: "속눈썹연장", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=247", image_src: "/web/main_cate_icons/H19.png" },
+    { name: "반영구", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=261", image_src: "/web/main_cate_icons/H20.png" },
+    { name: "왁싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=267", image_src: "/web/main_cate_icons/H21.png" },
+    { name: "타투", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=271", image_src: "/web/main_cate_icons/H22.png" },
+    { name: "네일아트", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=28", image_src: "/web/main_cate_icons/H23.png" },
+    { name: "피부미용", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=278", image_src: "/web/main_cate_icons/H24.png" },
+    { name: "헤어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=347", image_src: "/web/main_cate_icons/H25.png" },
+    { name: "메이크업", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=43", image_src: "/web/main_cate_icons/H26.png" },
+    { name: "피어싱", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=348", image_src: "/web/main_cate_icons/H27.png" },
+    { name: "미용기기", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=290", image_src: "/web/main_cate_icons/H28.png" },
+    { name: "인테리어", redirect_url: "https://m.almondyoung.com/product/list.html?cate_no=44", image_src: "/web/main_cate_icons/H29.png" }
+  ];
+
+  const state = {
+    isDragging: false,
+    startPos: 0,
+    currentTranslate: 0,
+    prevTranslate: 0,
+    animationID: null,
+    currentSlide: 0,
+    isViewAll: false,
+    dragSourceElement: null,
+    boundEventListeners: null
+  };
+
+  const supabaseClient = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+
+  // sessionStorage.setItem('memberId', 'joongsick'); // 로그인했지만 custom_sequence 없는 경우
+  // sessionStorage.setItem('memberId', 'yeonjeong'); // 로그인했지만 custom_sequence 없는 경우
+  // sessionStorage.setItem('memberId', 'hyunbin'); // 로그인했고 custom_sequence 있는 경우
+  // sessionStorage.clear(); // 로그인하지 않은 경우
+
+  const memberId = sessionStorage.getItem('memberId');
+
+
+  const utils = {
+    async fetchCustomMenu(memberId) {
+      try {
+        // 로그인하지 않은 경우
+        if (!memberId) {
+          console.log('memberId가 없네유')
+          return defaultMenus.guestDefault;
+        }
+
+        // 로그인한 경우 custom_sequence 조회
+        const { data: customSequence, error } = await supabaseClient
+          .from('custom_menu_sequence')
+          .select(`menu, sequence`)
+          .eq('member', memberId)
+          .order('sequence');
+
+        if (error) throw error;
+        console.log('Fetched custom menu data:', customSequence);
+
+        // custom_sequence가 없는 경우 기본 멤버 메뉴 반환
+        if (!customSequence || customSequence.length === 0) {
+          return defaultMenus.memberDefault;
+        }
+
+        // custom_sequence가 있는 경우 메뉴 데이터 구성
+        return customSequence.map(seq => ({
+          menu: FULL_MENU_LIST[seq.menu - 1]
+        }));
+      } catch (error) {
+        console.error('메뉴 조회 중 오류:', error);
+        return memberId ? defaultMenus.memberDefault : defaultMenus.guestDefault;
+      }
+    },
+
+    async checkAndInsertMember(memberId) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('members')
+          .select('*')
+          .eq('cafe24_id', memberId)
+          .single();
+
+        if (!data && !error) {
+          await supabaseClient
+            .from('members')
+            .insert([{ cafe24_id: memberId }]);
+        }
+      } catch (error) {
+        console.error('멤버 확인/추가 중 오류:', error);
+      }
+    },
+
+    redirectToAppStore() {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isAndroid) {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.pauseb.projectc";
+      } else if (isIOS) {
+        window.location.href = "https://apps.apple.com/kr/app/다뷰/id6452912806?platform=iphone";
+      } else {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.lcnine.daview";
+      }
+    },
+
+    getDefaultMenu(isMember = true) {
+      return isMember ? defaultMenus.memberDefault : defaultMenus.guestDefault;
+    }
+  };
+
+  const domManipulation = {
+    createMenuItem(menuItem, customInfo) {
+      const div = document.createElement('div');
+      div.className = `menu-item ${customInfo ? 'favorited' : ''}`;
+      div.setAttribute('data-menu-name', menuItem.name);
+
+      div.innerHTML = `
+        <img src="${menuItem.image_src}" alt="${menuItem.name}">
+        <span>${menuItem.name}</span>
+        <span class="favorite-star ${customInfo ? 'active' : ''}" onclick="menuEditor.toggleFavorite(this)">★</span>
+        <span class="sequence">${customInfo ? customInfo.sequence : ''}</span>
+      `;
+
+      return div;
+    },
+
+    updateSequenceNumbers() {
+      const favoritedItems = document.querySelectorAll('.menu-item.favorited');
+      favoritedItems.forEach((item, index) => {
+        item.querySelector('.sequence').textContent = index + 1;
+      });
+    },
+
+    updateSliderDisplay() {
+      if (!state.isViewAll) {
+        const slides = document.querySelectorAll(".hamburger_category_slider > div");
+        slides.forEach(slide => slide.classList.remove("active"));
+        if (slides[state.currentSlide]) {
+          slides[state.currentSlide].classList.add("active");
+        }
+        this.updateDots();
+      }
+    },
+
+    updateDots() {
+      const dots = document.querySelectorAll(".dot");
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === state.currentSlide);
+      });
+    },
+
+    renderFullMenu() {
+      const fullMenuContainer = document.createElement('div');
+      fullMenuContainer.className = 'full-menu-container';
+      fullMenuContainer.style.display = 'none';
+
+      FULL_MENU_LIST.forEach(menuItem => {
+        const menuElement = document.createElement('a');
+        menuElement.href = menuItem.redirect_url;
+        menuElement.className = 'category fold';
+
+        if (menuItem.name === '다뷰') {
+          menuElement.href = '#';
+          menuElement.onclick = () => utils.redirectToAppStore();
+        }
+
+        const img = document.createElement('img');
+        img.src = menuItem.image_src;
+        img.alt = menuItem.name;
+        img.loading = 'lazy';
+
+        const span = document.createElement('span');
+        span.textContent = menuItem.name;
+
+        menuElement.appendChild(img);
+        menuElement.appendChild(span);
+        fullMenuContainer.appendChild(menuElement);
+      });
+
+      return fullMenuContainer;
+    }
+  };
+
+  const sliderController = {
+    addDragEvents() {
+      const slider = document.querySelector('.hamburger_category_slider');
+      if (!slider) return;
+
+      const handlers = {
+        animation: () => {
+          if (state.isDragging) {
+            state.animationID = requestAnimationFrame(handlers.animation);
+          }
+        },
+
+        drag: (event) => {
+          if (!state.isDragging) return;
+          event.preventDefault();
+
+          const currentPosition = event.type === "touchmove" ?
+            event.touches[0].clientX : event.clientX;
+          const diff = currentPosition - state.startPos;
+          state.currentTranslate = state.prevTranslate + diff;
+        },
+
+        dragStart: (event) => {
+          event.preventDefault();
+          if (state.isViewAll) return;
+
+          state.startPos = event.type === "touchstart" ?
+            event.touches[0].clientX : event.clientX;
+          state.isDragging = true;
+          state.animationID = requestAnimationFrame(handlers.animation);
+          slider.style.cursor = "grabbing";
+        },
+
+        dragEnd: () => {
+          if (!state.isDragging) return;
+
+          state.isDragging = false;
+          cancelAnimationFrame(state.animationID);
+          slider.style.cursor = "grab";
+
+          const movedBy = state.currentTranslate - state.prevTranslate;
+          const slides = document.querySelectorAll(".hamburger_category_slider > div");
+
+          if (Math.abs(movedBy) > 100) {
+            if (movedBy < 0 && state.currentSlide < slides.length - 1) {
+              state.currentSlide++;
+            } else if (movedBy > 0 && state.currentSlide > 0) {
+              state.currentSlide--;
+            }
+          }
+
+          state.prevTranslate = state.currentTranslate;
+          domManipulation.updateSliderDisplay();
+        }
+      };
+
+      const eventListeners = {
+        mousedown: handlers.dragStart,
+        mousemove: handlers.drag,
+        mouseup: handlers.dragEnd,
+        mouseleave: handlers.dragEnd,
+        touchstart: handlers.dragStart,
+        touchmove: handlers.drag,
+        touchend: handlers.dragEnd
+      };
+
+      Object.entries(eventListeners).forEach(([event, handler]) => {
+        slider.addEventListener(event, handler, { passive: false });
+      });
+
+      state.boundEventListeners = eventListeners;
+    },
+
+    removeDragEvents() {
+      const slider = document.querySelector('.hamburger_category_slider');
+      if (!slider || !state.boundEventListeners) return;
+
+      Object.entries(state.boundEventListeners).forEach(([event, handler]) => {
+        slider.removeEventListener(event, handler);
+      });
+    }
+  };
+
+  const menuEditor = {
+    async init() {
+      try {
+        // UI 초기화
+        await this.initializeUI();
+        // 메뉴 데이터 로드 및 렌더링
+        await this.loadAndRenderMenus();
+        // 스타일 추가
+        this.addStyles();
+      } catch (error) {
+        console.error('메뉴 에디터 초기화 중 오류:', error);
+        alert('메뉴 편집기를 불러오는 중 오류가 발생했습니다.');
+      }
+    },
+
+    async initializeUI() {
+      // 상단 버튼 상태 관리
+      this.toggleHeaderButtons('none');
+
+      // 전체 메뉴 보기 상태 초기화
+      this.resetViewAllState();
+
+      // 에디터 컨테이너 생성 및 추가
+      const editorContainer = this.createEditorContainer();
+      const slidedCategory = document.querySelector('.slided-category');
+      const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+      const sliderDots = document.querySelector('.slider-dots');
+
+      [hamburgerSlider, sliderDots].forEach(el => {
+        if (el) el.style.display = 'none';
+      });
+
+      slidedCategory.appendChild(editorContainer);
+    },
+
+    toggleHeaderButtons(display) {
+      ['editCustomMenu', 'betweenEditAll', 'viewAllButton'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.style.display = display;
+      });
+    },
+
+    resetViewAllState() {
+      if (state.isViewAll) {
+        state.isViewAll = false;
+        const fullMenuContainer = document.querySelector('.full-menu-container');
+        const viewAllButton = document.getElementById('viewAllButton');
+        if (fullMenuContainer) {
+          fullMenuContainer.style.display = 'none';
+          if (viewAllButton?.textContent === '닫기') {
+            viewAllButton.textContent = '전체 메뉴보기';
+          }
+        }
+      }
+    },
+
+    createEditorContainer() {
+      const container = document.createElement('div');
+      container.className = 'editor-container';
+      container.innerHTML = `
+      <div style="width: 90%; margin: 0 auto;">
+        <div class="editor-header">
+          <h3>메뉴 편집</h3>
+          <div class="editor-actions">
+            <button class="cancel-button" onclick="menuEditor.close()">취소</button>
+            <button class="save-button" onclick="menuEditor.save()">저장</button>
+          </div>
+        </div>
+        <div class="favorite-section">
+          <h4>즐겨찾기 메뉴</h4>
+          <div class="favorite-menu-container"></div>
+        </div>
+        <div class="available-section">
+          <h4>전체 메뉴</h4>
+          <div class="available-menu-container"></div>
+        </div>
+      </div>
+    `;
+      return container;
+    },
+
+    async loadAndRenderMenus() {
+      const memberId = sessionStorage.getItem('memberId')
+      console.log(memberId)
+      try {
+        // custom_sequence 데이터 가져오기
+        const { data: customSequence, error } = await supabaseClient
+          .from('custom_menu_sequence')
+          .select('menu, sequence')
+          .eq('member', memberId)
+          .order('sequence');
+
+        if (error) throw error;
+
+        const favoriteContainer = document.querySelector('.favorite-menu-container');
+        const availableContainer = document.querySelector('.available-menu-container');
+
+        if (!favoriteContainer || !availableContainer) {
+          throw new Error('메뉴 컨테이너를 찾을 수 없습니다.');
+        }
+
+        // 메뉴 배치 및 정렬
+        this.distributeMenuItems(customSequence, favoriteContainer, availableContainer);
+
+        // Sortable 초기화
+        this.initializeSortable(favoriteContainer);
+      } catch (error) {
+        console.error('메뉴 데이터 로드 중 오류:', error);
+        throw error;
+      }
+    },
+
+    distributeMenuItems(customSequence, favoriteContainer, availableContainer) {
+      const favoriteMenuIds = new Set(customSequence?.map(item => item.menu) ?? []);
+
+      FULL_MENU_LIST.forEach((menuItem, index) => {
+        const menuId = index + 1;
+        const isFavorite = favoriteMenuIds.has(menuId);
+        const menuElement = this.createMenuItem(menuItem, isFavorite, menuId);
+
+        if (isFavorite && customSequence) {
+          const sequenceData = customSequence.find(item => item.menu === menuId);
+          if (sequenceData) {
+            menuElement.setAttribute('data-sequence', sequenceData.sequence);
+            favoriteContainer.appendChild(menuElement);
+          } else {
+            availableContainer.appendChild(menuElement);
+          }
+        } else {
+          availableContainer.appendChild(menuElement);
+        }
+      });
+
+      // 즐겨찾기 메뉴 정렬
+      this.sortFavoriteMenus(favoriteContainer);
+    },
+
+    createMenuItem(menuItem, isFavorite, menuId) {
+      const div = document.createElement('div');
+      div.className = `menu-item ${isFavorite ? 'favorited' : ''}`;
+      div.setAttribute('data-menu-id', menuId);
+      div.setAttribute('data-menu-name', menuItem.name);
+
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'menu-image-container';
+
+      const img = document.createElement('img');
+      img.src = menuItem.image_src;
+      img.alt = menuItem.name;
+      img.loading = 'lazy';
+
+      const toggleIcon = document.createElement('button');
+      toggleIcon.className = 'toggle-icon';
+      toggleIcon.textContent = isFavorite ? '−' : '+';
+      toggleIcon.onclick = (e) => {
+        e.stopPropagation();
+        this.toggleFavorite(div);
+      };
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'menu-name';
+      nameSpan.textContent = menuItem.name;
+
+      imgContainer.appendChild(img);
+      imgContainer.appendChild(toggleIcon);
+      div.appendChild(imgContainer);
+      div.appendChild(nameSpan);
+
+      return div;
+    },
+
+    sortFavoriteMenus(favoriteContainer) {
+      const favoriteMenus = Array.from(favoriteContainer.children);
+      favoriteMenus.sort((a, b) => {
+        const sequenceA = parseInt(a.getAttribute('data-sequence')) || 0;
+        const sequenceB = parseInt(b.getAttribute('data-sequence')) || 0;
+        return sequenceA - sequenceB;
+      });
+      favoriteMenus.forEach(menu => favoriteContainer.appendChild(menu));
+    },
+
+    initializeSortable(favoriteContainer) {
+      new Sortable(favoriteContainer, {
+        animation: 150,
+        ghostClass: 'menu-item-ghost',
+        chosenClass: 'menu-item-chosen',
+        dragClass: 'menu-item-drag',
+        group: {
+          name: 'shared',
+          pull: false,
+          put: false
+        }
+      });
+    },
+
+    toggleFavorite(menuItem) {
+      const isFavorite = menuItem.classList.contains('favorited');
+      const favoriteContainer = document.querySelector('.favorite-menu-container');
+      const availableContainer = document.querySelector('.available-menu-container');
+      const toggleIcon = menuItem.querySelector('.toggle-icon');
+
+      if (isFavorite) {
+        menuItem.classList.remove('favorited');
+        toggleIcon.textContent = '+';
+        availableContainer.appendChild(menuItem);
+      } else {
+        const currentFavorites = favoriteContainer.children.length;
+        if (currentFavorites >= CONFIG.maxFavoriteCount) {
+          alert(`즐겨찾기는 최대 ${CONFIG.maxFavoriteCount}개까지 등록할 수 있습니다.`);
+          return;
+        }
+        menuItem.classList.add('favorited');
+        toggleIcon.textContent = '−';
+        favoriteContainer.appendChild(menuItem);
+      }
+    },
+
+    async save() {
+      try {
+        await this.checkAndCreateMember();
+        await this.saveMenuSequence();
+        await this.refreshAndClose();
+      } catch (error) {
+        console.error('메뉴 저장 중 오류:', error);
+        alert('메뉴 저장 중 오류가 발생했습니다.');
+      }
+    },
+
+    async checkAndCreateMember() {
+      const { data: existingMember, error: memberCheckError } = await supabaseClient
+        .from('members')
+        .select('cafe24_id')
+        .eq('cafe24_id', memberId)
+        .single();
+
+      if (memberCheckError && memberCheckError.code === 'PGRST116') {
+        const { error: insertMemberError } = await supabaseClient
+          .from('members')
+          .insert([{ cafe24_id: memberId }]);
+
+        if (insertMemberError) throw insertMemberError;
+        console.log('New member added:', memberId);
+      } else if (memberCheckError) {
+        throw memberCheckError;
+      }
+    },
+
+    async saveMenuSequence() {
+      const memberId = sessionStorage.getItem('memberId')
+      // memberId 검증
+      if (!memberId) {
+        throw new Error('회원 정보를 찾을 수 없습니다.');
+      }
+      const favoriteContainer = document.querySelector('.favorite-menu-container');
+      const favoritedMenus = Array.from(favoriteContainer.children).map((element, index) => {
+        const menuId = parseInt(element.getAttribute('data-menu-id'));
+        if (isNaN(menuId)) return null;
+        return {
+          member: memberId,
+          menu: menuId,
+          sequence: index + 1
+        };
+      }).filter(item => item !== null);
+
+      // 기존 데이터 삭제
+      const { error: deleteError } = await supabaseClient
+        .from('custom_menu_sequence')
+        .delete()
+        .eq('member', memberId);
+
+      if (deleteError) throw deleteError;
+
+      // 새 데이터 저장
+      if (favoritedMenus.length > 0) {
+        const { error: insertError } = await supabaseClient
+          .from('custom_menu_sequence')
+          .insert(favoritedMenus);
+
+        if (insertError) throw insertError;
+      }
+    },
+
+    async refreshAndClose() {
+      const memberId = sessionStorage.getItem('memberId')
+      const customSequenceMenu = await utils.fetchCustomMenu(memberId);
+      console.log('customSequenceMenu : ', customSequenceMenu)
+      await menuRenderer.renderCustomMenu(
+        customSequenceMenu
+      );
+      this.close();
+      alert(customSequenceMenu ? '메뉴 설정이 저장되었습니다.' : '기본 메뉴로 설정되었습니다.');
+    },
+
+    close() {
+      const editorContainer = document.querySelector('.editor-container');
+      if (editorContainer) {
+        editorContainer.remove();
+      }
+
+      // 상단 버튼들 다시 보이기
+      this.toggleHeaderButtons('block');
+
+      const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+      const sliderDots = document.querySelector('.slider-dots');
+
+      if (hamburgerSlider) hamburgerSlider.style.display = 'block';
+      if (sliderDots) sliderDots.style.display = 'flex';
+    },
+
+    addStyles() {
+      const style = document.createElement('style');
+      style.textContent = `
+      .editor-container {
+        background: white;
+        padding: 5px;
+      }
+      
+      .editor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 2.5px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .editor-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+      }
+      
+      .editor-actions {
+        display: flex;
+        gap: 2px;
+      }
+      
+      .favorite-section, .available-section {
+        margin-bottom: 24px;
+      }
+      
+      .favorite-section h4, .available-section h4 {
+        margin-bottom: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #666;
+      }
+      
+      .favorite-menu-container, .available-menu-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 10px;
+        padding: 15px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: #f9f9f9;
+        min-height: 100px;
+      }
+      
+      .menu-item {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 2px 1px 1px;
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: move;
+        width: fit-content;
+        margin: 0 auto;
+      }
+      
+      .menu-item:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .menu-image-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 4px;
+      }
+      
+      .menu-item img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+      
+      .menu-name {
+        font-size: 11px;
+        text-align: center;
+        color: #333;
+        word-break: keep-all;
+        line-height: 1.2;
+        margin-top: 4px;
+        width: 100%;
+        padding: 0 2px;
+      }
+      
+      .toggle-icon {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 16px;
+        height: 16px;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 1;
+        padding: 0;
+      }
+      
+      .toggle-icon:hover {
+        background: #e0e0e0;
+        transform: scale(1.1);
+      }
+      
+      .menu-item-ghost {
+        opacity: 0.5;
+      }
+      
+      .menu-item-chosen {
+        background-color: #f8f8f8;
+        }
+        
+        .menu-item-drag {
+          opacity: 0.8;
+        }
+        
+        .editor-actions button {
+          padding: 2px 4px;
+          border: none;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .save-button {
+          background-color: #F7AF00;
+          color: white;
+          font-weight: 500;
+        }
+        
+        .save-button:hover {
+          background-color: #e59e00;
+        }
+        
+        .cancel-button {
+          background-color: #f0f0f0;
+          color: #333;
+          font-weight: 500;
+        }
+        
+        .cancel-button:hover {
+          background-color: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+          .favorite-menu-container, .available-menu-container {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          
+          .menu-item {
+            width: 100%;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  };
+
+  const menuRenderer = {
+    async renderCustomMenu(menuSequence) {
+      try {
+        console.log('menuSequence : ', menuSequence);
+        const slider = document.querySelector('.hamburger_category_slider');
+        const dotsContainer = document.querySelector('.slider-dots');
+
+        if (!slider || !dotsContainer) {
+          throw new Error('필수 DOM 요소를 찾을 수 없습니다.');
+        }
+
+        slider.innerHTML = '';
+        dotsContainer.innerHTML = '';
+        slider.style.cursor = 'grab';
+
+        let pageContainer = document.createElement('div');
+        pageContainer.classList.add('image');
+        let lineContainer = document.createElement('div');
+        lineContainer.classList.add('line');
+        lineContainer.style.padding = "10px 0px"
+        let itemCount = 0;
+        let pageCount = 0;
+        let isFirstPage = true;
+
+        menuSequence.forEach((item, index) => {
+          // menu 데이터 추출 (구조에 따라 적절히 처리)
+          const menuData = item.menu;
+          if (!menuData) return;
+
+          const menuItem = document.createElement('a');
+          menuItem.className = 'category fold';
+          menuItem.id = 'bm_category';
+
+          if (menuData.name === '다뷰') {
+            menuItem.href = '#';
+            menuItem.onclick = () => utils.redirectToAppStore();
+          } else {
+            menuItem.href = menuData.redirect_url;
+          }
+
+          const menuImage = document.createElement('img');
+          menuImage.src = menuData.image_src;
+          menuImage.style.width = '50px';
+          menuImage.style.height = '50px';
+          menuImage.alt = menuData.name;
+          menuImage.loading = 'lazy';
+
+          const menuText = document.createElement('span');
+          menuText.style.fontSize = '14px';
+          menuText.style.marginTop = '8px';
+          menuText.textContent = menuData.name;
+
+          menuItem.appendChild(menuImage);
+          menuItem.appendChild(menuText);
+          lineContainer.appendChild(menuItem);
+
+          itemCount++;
+
+          if (itemCount % CONFIG.slideItemCount === 0 || index === menuSequence.length - 1) {
+            pageContainer.appendChild(lineContainer);
+            lineContainer = document.createElement('div');
+            lineContainer.classList.add('line');
+            lineContainer.style.padding = "10px 0px"
+          }
+
+          if (itemCount % CONFIG.pageItemCount === 0 || index === menuSequence.length - 1) {
+            const container = document.createElement('div');
+            if (isFirstPage) {
+              container.classList.add('active');
+              isFirstPage = false;
+            }
+            container.appendChild(pageContainer);
+            slider.appendChild(container);
+
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            if (pageCount === 0) {
+              dot.classList.add('active');
+            }
+
+            dotsContainer.appendChild(dot);
+            pageCount++;
+
+            if (index < menuSequence.length - 1) {
+              pageContainer = document.createElement('div');
+              pageContainer.classList.add('image');
+            }
+          }
+        });
+
+        sliderController.addDragEvents();
+      } catch (error) {
+        console.error('메뉴 렌더링 중 오류:', error);
+        alert('메뉴를 불러오는 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const menuViewController = {
+    toggleMenuView() {
+      const slidedCategory = document.querySelector('.slided-category');
+      const hamburgerSlider = document.querySelector('.hamburger_category_slider');
+      const sliderDots = document.querySelector('.slider-dots');
+      let fullMenuContainer = document.querySelector('.full-menu-container');
+
+      if (!fullMenuContainer) {
+        fullMenuContainer = domManipulation.renderFullMenu();
+        slidedCategory.insertBefore(fullMenuContainer, sliderDots);
+      }
+
+      if (state.isViewAll) {
+        hamburgerSlider.style.display = 'none';
+        sliderDots.style.display = 'none';
+        fullMenuContainer.style.display = 'grid';
+        document.getElementById('viewAllButton').textContent = "닫기";
+        sliderController.removeDragEvents();
+      } else {
+        hamburgerSlider.style.display = 'block';
+        sliderDots.style.display = 'flex';
+        fullMenuContainer.style.display = 'none';
+        document.getElementById('viewAllButton').textContent = "전체 메뉴보기";
+        state.currentSlide = 0;
+        domManipulation.updateSliderDisplay();
+        sliderController.addDragEvents();
+      }
+    }
+  };
+
+  async function openEditor(memberId) {
+    if (!memberId) {
+      alert('로그인이 필요한 기능입니다.');
+      return;
+    }
+    await menuEditor.init();
+  }
+
+  // SessionStorage 변경 감지를 위한 커스텀 이벤트 생성
+  const SESSION_CHANGE_EVENT = 'sessionStorageChange';
+
+  // SessionStorage 변경 감지를 위한 프록시 설정
+  const createSessionStorageProxy = () => {
+    const originalSetItem = sessionStorage.setItem;
+    const originalRemoveItem = sessionStorage.removeItem;
+    const originalClear = sessionStorage.clear;
+
+    sessionStorage.setItem = function (key, value) {
+      const oldValue = sessionStorage.getItem(key);
+      console.log('oldValue : ', oldValue)
+      originalSetItem.apply(this, [key, value]);
+
+      window.dispatchEvent(new CustomEvent(SESSION_CHANGE_EVENT, {
+        detail: {
+          key,
+          oldValue,
+          newValue: value,
+          type: 'setItem'
+        }
+      }));
+    };
+
+    sessionStorage.removeItem = function (key) {
+      const oldValue = sessionStorage.getItem(key);
+      console.log('oldValue : ', oldValue)
+      originalRemoveItem.apply(this, [key]);
+
+      window.dispatchEvent(new CustomEvent(SESSION_CHANGE_EVENT, {
+        detail: {
+          key,
+          oldValue,
+          newValue: null,
+          type: 'removeItem'
+        }
+      }));
+    };
+
+    sessionStorage.clear = function () {
+      originalClear.apply(this);
+
+      window.dispatchEvent(new CustomEvent(SESSION_CHANGE_EVENT, {
+        detail: {
+          type: 'clear'
+        }
+      }));
+    };
+  };
+
+  // 메뉴 상태 관리 및 업데이트를 위한 컨트롤러
+  const menuStateController = {
+    async updateMenuState() {
+      const memberId = sessionStorage.getItem('memberId');
+      const editCustomMenu = document.getElementById('editCustomMenu');
+      const betweenEditAll = document.getElementById('betweenEditAll');
+
+      try {
+        if (memberId) {
+          // 로그인 상태
+          if (editCustomMenu) editCustomMenu.style.display = 'block';
+          if (betweenEditAll) betweenEditAll.style.display = 'block';
+
+          await utils.checkAndInsertMember(memberId);
+          const customSequenceMenu = await utils.fetchCustomMenu(memberId);
+          await menuRenderer.renderCustomMenu(customSequenceMenu || utils.getDefaultMenu(true));
+        } else {
+          // 비로그인 상태
+          if (editCustomMenu) editCustomMenu.style.display = 'none';
+          if (betweenEditAll) betweenEditAll.style.display = 'none';
+
+          await menuRenderer.renderCustomMenu(utils.getDefaultMenu(false));
+        }
+
+        // 전체보기 상태 초기화
+        if (state.isViewAll) {
+          state.isViewAll = false;
+          const fullMenuContainer = document.querySelector('.full-menu-container');
+          const viewAllButton = document.getElementById('viewAllButton');
+          if (fullMenuContainer) {
+            fullMenuContainer.style.display = 'none';
+          }
+          if (viewAllButton && viewAllButton.textContent === '닫기') {
+            viewAllButton.textContent = '전체 메뉴보기';
+          }
+        }
+      } catch (error) {
+        console.error('메뉴 상태 업데이트 중 오류:', error);
+        alert('메뉴를 불러오는 중 오류가 발생했습니다.');
+      }
+    },
+
+    initializeSessionListener() {
+      // SessionStorage 변경 감지 이벤트 리스너
+      window.addEventListener(SESSION_CHANGE_EVENT, async (e) => {
+        if (e.detail.key === 'memberId' || e.detail.type === 'clear') {
+          await this.updateMenuState();
+        }
+      });
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      // SessionStorage 프록시 설정
+      createSessionStorageProxy();
+
+      // 세션 변경 리스너 초기화
+      menuStateController.initializeSessionListener();
+
+      // 초기 메뉴 상태 설정
+      await menuStateController.updateMenuState();
+
+      // 이벤트 리스너 설정
+      document.getElementById('editCustomMenu')?.addEventListener('click', async () => {
+        const memberId = sessionStorage.getItem('memberId');
+        openEditor(memberId);
+      });
+
+      document.getElementById('viewAllButton')?.addEventListener('click', () => {
+        state.isViewAll = !state.isViewAll;
+        menuViewController.toggleMenuView();
+      });
+    } catch (error) {
+      console.error('초기화 중 오류:', error);
+      alert('메뉴를 불러오는 중 오류가 발생했습니다.');
+    }
+  });
+</script>
